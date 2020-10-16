@@ -25,5 +25,4 @@ enum class TravelMode(val modeID: Int)
         /** Returns the corresponding TravelMode for the modeID passed. Returns null if no match **/
         fun valueOf(modeID: Int) = values.firstOrNull { it.modeID == modeID }
     }
-
 }
