@@ -2,6 +2,7 @@ package com.johnseymour.ridingrails.apisupport
 
 import com.google.gson.GsonBuilder
 import com.johnseymour.ridingrails.models.StopDetails
+import com.johnseymour.ridingrails.models.TripJourney
 import nl.komponents.kovenant.Promise
 import nl.komponents.kovenant.combine.combine
 import nl.komponents.kovenant.deferred
@@ -48,7 +49,21 @@ class NetworkRepository
             val origin = it.first
             val destination = it.second
 
-            val cake = 2
+            val requestCall = tripPlannerAPI.planTrip()
+
+            requestCall.enqueue(object: Callback<List<TripJourney>>
+            {
+                override fun onResponse(call: Call<List<TripJourney>>, response: Response<List<TripJourney>>)
+                {
+                    val trip = response.body()
+                    val cake = 2
+                }
+
+                override fun onFailure(call: Call<List<TripJourney>>, t: Throwable)
+                {
+
+                }
+            })
         }
     }
 

@@ -1,6 +1,7 @@
 package com.johnseymour.ridingrails.apisupport
 
 import com.johnseymour.ridingrails.models.StopDetails
+import com.johnseymour.ridingrails.models.TripJourney
 import com.johnseymour.ridingrails.models.TripLeg
 import retrofit2.Call
 import retrofit2.http.GET
@@ -36,5 +37,5 @@ internal interface NSWTripPlannerAPI
         "&TfNSWTR=true" +
         "&version=10.2.1.42"
         )
-    fun planTrip(): Call<TripLeg>
+    fun planTrip(): Call<List<TripJourney>>
 }
