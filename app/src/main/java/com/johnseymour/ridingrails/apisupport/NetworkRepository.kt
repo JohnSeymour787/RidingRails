@@ -15,6 +15,8 @@ import java.util.*
 
 class NetworkRepository
 {
+    private val stopDetailsCache = mutableMapOf<String, StopDetails>()
+
     private val tripPlannerAPI by lazy {
         val gsonBuilder = GsonBuilder().registerTypeAdapter(StopDetails::class.java, StopDetailsDeserialiser()).create()
         val gsonConverter = GsonConverterFactory.create(gsonBuilder)
@@ -41,6 +43,7 @@ class NetworkRepository
 
     fun planTrip(origin: String, destination: String)
     {
+        //Wait until both promises for retrieving stop details are resolved before making TripPlan API call
         combine(getStopDetails(origin), getStopDetails(destination)).success {
             val origin = it.first
             val destination = it.second
@@ -49,26 +52,47 @@ class NetworkRepository
         }
     }
 
-    fun getStopDetails(stopString: String): Promise<StopDetails, Throwable>
+
+    /** Searches the stopDetailsCache Map<String, StopDetails> for a search term.
+     * @return StopDetails if found, or null if nothing.**/
+    private fun searchStopDetailCache(searchTerm: String): StopDetails?
+    {
+        //"Searching" the cache by filtering keys and taking first value
+        return stopDetailsCache.filterKeys { it.toLowerCase(Locale.getDefault()).contains(searchTerm) }.values.firstOrNull()
+    }
+
+    private fun getStopDetails(stopString: String): Promise<StopDetails, Throwable>
     {
         val deferred = deferred<StopDetails, Throwable>()
+        val searchTerm = stopString.toLowerCase(Locale.getDefault())
 
-        val requestToMake = tripPlannerAPI.getStopDetails(stopString.toLowerCase(Locale.getDefault()))
+        //If the cache has the stop in it, use this and immediately return
+        searchStopDetailCache(searchTerm)?.let {
+            deferred.resolve(it)
+            return deferred.promise
+        }
+
+        //Otherwise, need to make new API call
+        val requestToMake = tripPlannerAPI.getStopDetails(searchTerm)
 
         requestToMake.enqueue(object: Callback<StopDetails>
         {
             override fun onResponse(call: Call<StopDetails>, response: Response<StopDetails>)
             {
-                val stopDetails = response.body()?.let {
+                response.body()?.let {
+                    //Adding this response to the cache, indexed by the disassembled name (doesn't include ", Sydney" at end)
+                    stopDetailsCache[it.disassembledName] = it
+                    //Add reference to same StopDetails but using what the user entered as the index, because they might type
+                    //something similar next time
+                    stopDetailsCache[searchTerm] = it
+
+                    //Resolve the promise for this deferred
                     deferred.resolve(it)
                 }
-                val cake = 2
             }
 
-            override fun onFailure(call: Call<StopDetails>, t: Throwable)
-            {
-                TODO("Not yet implemented")
-            }
+            //Failure error needs to be handled elsewhere
+            override fun onFailure(call: Call<StopDetails>, t: Throwable) = deferred.reject(t)
         })
 
         return deferred.promise
