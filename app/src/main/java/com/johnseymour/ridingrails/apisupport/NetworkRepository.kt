@@ -2,6 +2,9 @@ package com.johnseymour.ridingrails.apisupport
 
 import com.google.gson.GsonBuilder
 import com.johnseymour.ridingrails.models.StopDetails
+import nl.komponents.kovenant.Promise
+import nl.komponents.kovenant.combine.combine
+import nl.komponents.kovenant.deferred
 import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Callback
@@ -35,22 +38,39 @@ class NetworkRepository
 
         retrofit.create(NSWTripPlannerAPI::class.java)
     }
-    fun getStopDetails(stopString: String)
+
+    fun planTrip(origin: String, destination: String)
     {
+        combine(getStopDetails(origin), getStopDetails(destination)).success {
+            val origin = it.first
+            val destination = it.second
+
+            val cake = 2
+        }
+    }
+
+    fun getStopDetails(stopString: String): Promise<StopDetails, Throwable>
+    {
+        val deferred = deferred<StopDetails, Throwable>()
+
         val requestToMake = tripPlannerAPI.getStopDetails(stopString.toLowerCase(Locale.getDefault()))
 
         requestToMake.enqueue(object: Callback<StopDetails>
         {
+            override fun onResponse(call: Call<StopDetails>, response: Response<StopDetails>)
+            {
+                val stopDetails = response.body()?.let {
+                    deferred.resolve(it)
+                }
+                val cake = 2
+            }
+
             override fun onFailure(call: Call<StopDetails>, t: Throwable)
             {
                 TODO("Not yet implemented")
             }
-
-            override fun onResponse(call: Call<StopDetails>, response: Response<StopDetails>)
-            {
-                val stopDetails = response.body()
-                val cake = 2
-            }
         })
+
+        return deferred.promise
     }
 }

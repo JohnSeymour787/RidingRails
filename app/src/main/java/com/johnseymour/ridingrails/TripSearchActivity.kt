@@ -11,6 +11,6 @@ class TripSearchActivity : AppCompatActivity()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        NetworkRepository().getStopDetails("st leonards")
+        NetworkRepository().planTrip("sydney central", "st leonards")
     }
 }
