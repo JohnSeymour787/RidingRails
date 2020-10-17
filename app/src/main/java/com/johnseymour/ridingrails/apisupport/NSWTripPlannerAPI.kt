@@ -6,6 +6,7 @@ import com.johnseymour.ridingrails.models.TripLeg
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
+import retrofit2.http.QueryMap
 
 internal interface NSWTripPlannerAPI
 {
@@ -24,9 +25,7 @@ internal interface NSWTripPlannerAPI
         "&itdDate=20201016" +
         "&itdTime=1200" +
         "&type_origin=any" +
-        "&name_origin=10101100" +
         "&type_destination=any" +
-        "&name_destination=10101103" +
         "&calcNumberOfTrips=6" +
         "&excludedMeans=checkbox" +
         "&exclMOT_4=1" +
@@ -37,5 +36,5 @@ internal interface NSWTripPlannerAPI
         "&TfNSWTR=true" +
         "&version=10.2.1.42"
         )
-    fun planTrip(): Call<Array<TripJourney>>
+    fun planTrip(@Query("name_origin") originID: Int, @Query("name_destination") destinationID: Int): Call<Array<TripJourney>>
 }

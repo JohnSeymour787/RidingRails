@@ -50,14 +50,15 @@ class NetworkRepository
         retrofit.create(NSWTripPlannerAPI::class.java)
     }
 
-    fun planTrip(origin: String, destination: String)
+    fun planTrip(originString: String, destinationString: String)
     {
+
         //Wait until both promises for retrieving stop details are resolved before making TripPlan API call
-        combine(getStopDetails(origin), getStopDetails(destination)).success {
+        combine(getStopDetails(originString), getStopDetails(destinationString)).success {
             val origin = it.first
             val destination = it.second
 
-            val requestCall = tripPlannerAPI.planTrip()
+            val requestCall = tripPlannerAPI.planTrip(origin.id, destination.id)
 
             requestCall.enqueue(object: Callback<Array<TripJourney>>
             {
