@@ -7,13 +7,9 @@ import com.johnseymour.ridingrails.models.TripJourney
 import com.johnseymour.ridingrails.models.TripLeg
 import java.lang.reflect.Type
 
-class TripOptionsDeserialiser: JsonDeserializer<List<TripJourney>>
+class TripOptionsDeserialiser: JsonDeserializer<Array<TripJourney>>
 {
-    override fun deserialize(
-        json: JsonElement?,
-        typeOfT: Type?,
-        context: JsonDeserializationContext?
-                            ): List<TripJourney>
+    override fun deserialize(json: JsonElement?, typeOfT: Type?, context: JsonDeserializationContext?): Array<TripJourney>
     {
         val journeysJSONArray = json?.asJsonObject?.getAsJsonArray("journeys")
 
@@ -22,21 +18,25 @@ class TripOptionsDeserialiser: JsonDeserializer<List<TripJourney>>
         journeysJSONArray?.forEach { element ->
             element?.asJsonObject?.let {
                 val interchanges = it.getAsJsonPrimitive("interchanges").asInt
-                //Get the price of an adult ticket nested in "fare" object. "priceBrutto" means 'gross' in German apparently.
+
+                //Get the price of an adult ticket nested in "fare" object. "Brutto" means 'gross' in German apparently.
                 val price = it.getAsJsonObject("fare")?.getAsJsonArray("tickets")
                                 ?.firstOrNull()?.asJsonObject?.getAsJsonPrimitive("priceBrutto")?.asFloat
-                            ?: 0F
+                                ?: 0F
 
                 //Deserialise the legs array
-                val legsArray = context?.deserialize<Array<TripLeg>>(
-                    it.getAsJsonArray("legs"),
-                    Array<TripLeg>::class.java
-                                                                    )?.toList() ?: return@forEach
+                val legsArray = context?.deserialize<Array<TripLeg?>>(
+                                            it.getAsJsonArray("legs"),
+                                            Array<TripLeg?>::class.java
+                                            )?.toList()?.filterNotNull() ?: return@forEach
 
-                resultList.add(TripJourney(interchanges, legsArray, price))
+                //legsArray can be empty if the legs are not TravelMode.Train. Therefore, don't add
+                if (legsArray.isNotEmpty())
+                {
+                    resultList.add(TripJourney(interchanges, legsArray, price))
+                }
             }
         }
-
-        return resultList
+        return resultList.toTypedArray()
     }
 }

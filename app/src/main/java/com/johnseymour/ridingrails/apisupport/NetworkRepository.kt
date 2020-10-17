@@ -1,8 +1,10 @@
 package com.johnseymour.ridingrails.apisupport
 
 import com.google.gson.GsonBuilder
+import com.johnseymour.ridingrails.models.PlatformDetails
 import com.johnseymour.ridingrails.models.StopDetails
 import com.johnseymour.ridingrails.models.TripJourney
+import com.johnseymour.ridingrails.models.TripLeg
 import nl.komponents.kovenant.Promise
 import nl.komponents.kovenant.combine.combine
 import nl.komponents.kovenant.deferred
@@ -19,7 +21,13 @@ class NetworkRepository
     private val stopDetailsCache = mutableMapOf<String, StopDetails>()
 
     private val tripPlannerAPI by lazy {
-        val gsonBuilder = GsonBuilder().registerTypeAdapter(StopDetails::class.java, StopDetailsDeserialiser()).create()
+        val gsonBuilder = GsonBuilder().run {
+            registerTypeAdapter(StopDetails::class.java, StopDetailsDeserialiser())
+            registerTypeAdapter(PlatformDetails::class.java, PlatformDetailsDeserialiser())
+            registerTypeAdapter(TripLeg::class.java, TripLegDeserialiser())
+            registerTypeAdapter(Array<TripJourney>::class.java, TripOptionsDeserialiser())
+            create()
+        }
         val gsonConverter = GsonConverterFactory.create(gsonBuilder)
 
         //Creating a HTTP client here to add a header to all requests
@@ -51,15 +59,15 @@ class NetworkRepository
 
             val requestCall = tripPlannerAPI.planTrip()
 
-            requestCall.enqueue(object: Callback<List<TripJourney>>
+            requestCall.enqueue(object: Callback<Array<TripJourney>>
             {
-                override fun onResponse(call: Call<List<TripJourney>>, response: Response<List<TripJourney>>)
+                override fun onResponse(call: Call<Array<TripJourney>>, response: Response<Array<TripJourney>>)
                 {
-                    val trip = response.body()
+                    val trip = response.body()?.toList()
                     val cake = 2
                 }
 
-                override fun onFailure(call: Call<List<TripJourney>>, t: Throwable)
+                override fun onFailure(call: Call<Array<TripJourney>>, t: Throwable)
                 {
 
                 }

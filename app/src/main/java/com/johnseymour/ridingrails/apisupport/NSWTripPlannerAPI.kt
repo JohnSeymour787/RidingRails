@@ -26,7 +26,7 @@ internal interface NSWTripPlannerAPI
         "&type_origin=any" +
         "&name_origin=10101100" +
         "&type_destination=any" +
-        "&name_destination=10101115" +
+        "&name_destination=10101103" +
         "&calcNumberOfTrips=6" +
         "&excludedMeans=checkbox" +
         "&exclMOT_4=1" +
@@ -37,5 +37,5 @@ internal interface NSWTripPlannerAPI
         "&TfNSWTR=true" +
         "&version=10.2.1.42"
         )
-    fun planTrip(): Call<List<TripJourney>>
+    fun planTrip(): Call<Array<TripJourney>>
 }
