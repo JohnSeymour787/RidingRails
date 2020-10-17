@@ -17,7 +17,7 @@ class TripSearchActivity : AppCompatActivity()
         setContentView(R.layout.activity_main)
 
         val networkController = NetworkRepository()
-        networkController.planTrip("sydney central", "circular")
+        networkController.planTrip("sydney central", "circular", "20201016", "1200")
 
         BACKGROUND.submit {
             Thread.sleep(10000)
