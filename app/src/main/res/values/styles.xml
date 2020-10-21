@@ -5,6 +5,20 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
+    </style>
+
+    <style name="TripPlanningDialogs" parent="android:Theme.Material.Dialog">
+        <item name="android:datePickerStyle">@style/DatePickerTheme</item>
+        <item name="android:timePickerStyle">@style/TimePickerTheme</item>
+    </style>
+
+    <style name="DatePickerTheme" parent="android:Widget.DatePicker">
+        <item name="android:datePickerMode">spinner</item>
+    </style>
+
+    <style name="TimePickerTheme" parent="android:Widget.Material.TimePicker">
+        <item name="android:timePickerMode">spinner</item>
     </style>
 
 </resources>
