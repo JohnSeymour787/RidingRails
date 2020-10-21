@@ -9,7 +9,7 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
-class PlatformDetailsDeserialiser: JsonDeserializer<PlatformDetails>
+internal class PlatformDetailsDeserialiser: JsonDeserializer<PlatformDetails>
 {
     override fun deserialize(json: JsonElement?, typeOfT: Type?, context: JsonDeserializationContext?): PlatformDetails?
     {
@@ -47,7 +47,7 @@ class PlatformDetailsDeserialiser: JsonDeserializer<PlatformDetails>
         {
             return try
             {
-                ZonedDateTime.parse(time, formatter) ?: null
+                ZonedDateTime.parse(time, formatter)
             }
             catch (e: NullPointerException)
             {

@@ -16,6 +16,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.*
 
+//TODO() Make singleton class
 class NetworkRepository
 {
     private val stopDetailsCache = mutableMapOf<String, StopDetails>()
@@ -54,7 +55,6 @@ class NetworkRepository
     //"itdTime=1200"
     fun planTrip(originString: String, destinationString: String, dateString: String, timeString: String)
     {
-
         //Wait until both promises for retrieving stop details are resolved before making TripPlan API call
         combine(getStopDetails(originString), getStopDetails(destinationString)).success {
             val origin = it.first
@@ -117,6 +117,7 @@ class NetworkRepository
                 }
             }
 
+            //TODO() Need to handle failure to connect to API (show a dialogue or smt) <- Test with phone turning WiFi and Mobile Data off
             //Failure error needs to be handled elsewhere
             override fun onFailure(call: Call<StopDetails>, t: Throwable) = deferred.reject(t)
         })

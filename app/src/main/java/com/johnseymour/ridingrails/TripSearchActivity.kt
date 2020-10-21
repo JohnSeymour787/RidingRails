@@ -21,24 +21,29 @@ class TripSearchActivity : AppCompatActivity()
         ViewModelProvider(this).get(TripSearchViewModel::class.java)
     }
 
+    //TODO() make singleton
+    private val networkController = NetworkRepository()
+
     override fun onCreate(savedInstanceState: Bundle?)
     {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val networkController = NetworkRepository()
-        networkController.planTrip("sydney central", destinationInput?.text?.toString() ?: "", "20201016", "1200")
-
-        originInput.doOnTextChanged { text, start, before, count ->
+        originInput.doOnTextChanged { text, _, _, _ ->
             viewModel.origin = text.toString()
         }
 
-        destinationInput.doOnTextChanged { text, start, before, count ->
+        destinationInput.doOnTextChanged { text, _, _, _ ->
             viewModel.destination = text.toString()
         }
 
-        timeInput.text = viewModel.timeString
         dateInput.text = viewModel.dateString
+        timeInput.text = viewModel.timeString
+    }
+
+    fun planNewTrip(v: View)
+    {
+        viewModel.planTrip()
     }
 
 
@@ -57,17 +62,6 @@ class TripSearchActivity : AppCompatActivity()
         }
     }
 
-    /**Updates time portion of the ViewModel's plannedTime property and updates the time text.
-     * Used as onTimeSet listent for the TimePickerDialogue created in this activity.*/
-    private fun onTimeSet(timePicker: TimePicker, hour: Int, minute: Int)
-    {
-        viewModel.apply {
-            plannedTime = plannedTime.updatedTime(hour, minute)
-        }
-
-        timeInput.text = viewModel.timeString
-    }
-
     /**Updates Date portion of ViewModel's plannedTime property and updates the date text.
      * Used as onDateSet listener for the DatePickerDialogue needed on this activity.
      * @param month : Month index of the year, January = 0*/
@@ -79,11 +73,18 @@ class TripSearchActivity : AppCompatActivity()
 
         dateInput.text = viewModel.dateString
     }
-}
 
-//TODO() V Probably have a method in the ViewModel to make the intent, packaging this into it
-/**Returns a string from the DatePicker's date in a format that the API accepts**/
-private fun DatePicker.toAPIDateString(): String = "$year$month$dayOfMonth"
+    /**Updates time portion of the ViewModel's plannedTime property and updates the time text.
+     * Used as onTimeSet listent for the TimePickerDialogue created in this activity.*/
+    private fun onTimeSet(timePicker: TimePicker, hour: Int, minute: Int)
+    {
+        viewModel.apply {
+            plannedTime = plannedTime.updatedTime(hour, minute)
+        }
+
+        timeInput.text = viewModel.timeString
+    }
+}
 
 private fun ZonedDateTime.updatedDate(year: Int, month: Int, day: Int): ZonedDateTime = withYear(year).withMonth(month).withDayOfMonth(day)
 private fun ZonedDateTime.updatedTime(hour: Int, minute: Int): ZonedDateTime = withHour(hour).withMinute(minute)

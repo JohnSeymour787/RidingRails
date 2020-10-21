@@ -10,7 +10,7 @@ import java.lang.reflect.Type
 
 
 //TODO make internal and singleton
-class StopDetailsDeserialiser: JsonDeserializer<StopDetails>
+internal class StopDetailsDeserialiser: JsonDeserializer<StopDetails>
 {
     override fun deserialize(json: JsonElement?, typeOfT: Type?, context: JsonDeserializationContext?): StopDetails?
     {

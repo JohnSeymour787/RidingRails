@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">RidingRails</string>
+    <string name="main_button_plan_trip">Plan Trip</string>
 </resources>

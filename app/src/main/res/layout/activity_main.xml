@@ -51,4 +51,13 @@
         tools:text="10:00pm"
         app:layout_constraintTop_toBottomOf="@id/destinationLayout"
         app:layout_constraintEnd_toEndOf="parent"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/main_button_plan_trip"
+        android:onClick="planNewTrip"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/timeInput"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
