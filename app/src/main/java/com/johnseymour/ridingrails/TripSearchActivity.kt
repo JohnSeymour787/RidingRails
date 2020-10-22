@@ -8,9 +8,11 @@ import android.view.View
 import android.widget.DatePicker
 import android.widget.TimePicker
 import androidx.core.widget.doOnTextChanged
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.johnseymour.ridingrails.apisupport.NetworkRepository
 import com.johnseymour.ridingrails.apisupport.TripLegDeserialiser
+import com.johnseymour.ridingrails.models.TripOptions
 import com.johnseymour.ridingrails.models.TripSearchViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import java.time.ZonedDateTime
@@ -20,9 +22,6 @@ class TripSearchActivity : AppCompatActivity()
     private val viewModel by lazy {
         ViewModelProvider(this).get(TripSearchViewModel::class.java)
     }
-
-    //TODO() make singleton
-    private val networkController = NetworkRepository()
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -43,7 +42,9 @@ class TripSearchActivity : AppCompatActivity()
 
     fun planNewTrip(v: View)
     {
-        viewModel.planTrip()
+        //ViewModel uses its properties to create an intent with the user parameters
+        //to allow the 2nd activity to make the API calls.
+        startActivity(viewModel.planTripIntent(this))
     }
 
 

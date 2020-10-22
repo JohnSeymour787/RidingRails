@@ -7,7 +7,7 @@ import com.johnseymour.ridingrails.models.TripJourney
 import com.johnseymour.ridingrails.models.TripLeg
 import java.lang.reflect.Type
 
-internal class TripOptionsDeserialiser: JsonDeserializer<Array<TripJourney>>
+internal class TripJourneyArrayDeserialiser: JsonDeserializer<Array<TripJourney>>
 {
     override fun deserialize(json: JsonElement?, typeOfT: Type?, context: JsonDeserializationContext?): Array<TripJourney>
     {

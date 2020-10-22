@@ -1,6 +1,10 @@
 package com.johnseymour.ridingrails.models
 
+import android.content.Context
+import android.content.Intent
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import com.johnseymour.ridingrails.TripOptionsActivity
 import com.johnseymour.ridingrails.apisupport.NetworkRepository
 import java.time.ZoneId
 import java.time.ZonedDateTime
@@ -17,9 +21,9 @@ class TripSearchViewModel: ViewModel()
     val timeString: String
         get() = plannedTime.format(timeFormatter)
 
-    fun planTrip()
+    fun planTripIntent(context: Context): Intent
     {
-        NetworkRepository().planTrip(origin, destination, plannedTime.toAPIDateString(), plannedTime.toAPITimeString())
+        return TripOptionsActivity.planTripIntent(context, origin, destination, plannedTime.toAPIDateString(), plannedTime.toAPITimeString())
     }
 
     companion object

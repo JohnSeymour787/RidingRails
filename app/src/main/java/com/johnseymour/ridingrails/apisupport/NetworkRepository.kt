@@ -1,10 +1,9 @@
 package com.johnseymour.ridingrails.apisupport
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.google.gson.GsonBuilder
-import com.johnseymour.ridingrails.models.PlatformDetails
-import com.johnseymour.ridingrails.models.StopDetails
-import com.johnseymour.ridingrails.models.TripJourney
-import com.johnseymour.ridingrails.models.TripLeg
+import com.johnseymour.ridingrails.models.*
 import nl.komponents.kovenant.Promise
 import nl.komponents.kovenant.combine.combine
 import nl.komponents.kovenant.deferred
@@ -14,7 +13,8 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.util.*
+import java.util.Locale
+
 
 //TODO() Make singleton class
 class NetworkRepository
@@ -26,7 +26,7 @@ class NetworkRepository
             registerTypeAdapter(StopDetails::class.java, StopDetailsDeserialiser())
             registerTypeAdapter(PlatformDetails::class.java, PlatformDetailsDeserialiser())
             registerTypeAdapter(TripLeg::class.java, TripLegDeserialiser())
-            registerTypeAdapter(Array<TripJourney>::class.java, TripOptionsDeserialiser())
+            registerTypeAdapter(Array<TripJourney>::class.java, TripJourneyArrayDeserialiser())
             create()
         }
         val gsonConverter = GsonConverterFactory.create(gsonBuilder)
@@ -51,10 +51,10 @@ class NetworkRepository
         retrofit.create(NSWTripPlannerAPI::class.java)
     }
 
-    //"itdDate=20201016"
-    //"itdTime=1200"
-    fun planTrip(originString: String, destinationString: String, dateString: String, timeString: String)
+
+    fun planTrip(originString: String, destinationString: String, dateString: String, timeString: String): LiveData<TripOptions>
     {
+        val responseLiveData = MutableLiveData<TripOptions>()
         //Wait until both promises for retrieving stop details are resolved before making TripPlan API call
         combine(getStopDetails(originString), getStopDetails(destinationString)).success {
             val origin = it.first
@@ -62,12 +62,13 @@ class NetworkRepository
 
             val requestCall = tripPlannerAPI.planTrip(origin.id, destination.id, dateString, timeString)
 
+            //Make asynchronous call to TripPlanner endpoint
             requestCall.enqueue(object: Callback<Array<TripJourney>>
             {
                 override fun onResponse(call: Call<Array<TripJourney>>, response: Response<Array<TripJourney>>)
                 {
-                    val trip = response.body()?.toList()
-                    val cake = 2
+                    val trip = response.body()?.toList() ?: return
+                    responseLiveData.postValue(TripOptions(origin, destination, trip))
                 }
 
                 override fun onFailure(call: Call<Array<TripJourney>>, t: Throwable)
@@ -76,6 +77,8 @@ class NetworkRepository
                 }
             })
         }
+
+        return responseLiveData
     }
 
 
