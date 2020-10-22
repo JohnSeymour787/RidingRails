@@ -6,10 +6,16 @@ import com.johnseymour.ridingrails.apisupport.NetworkRepository
 
 class TripOptionsViewModel: ViewModel()
 {
-    lateinit var tripOptionsLive: LiveData<TripOptions>
+    lateinit var initialStopLive: LiveData<StopDetails>
+    lateinit var finalDestinationLive: LiveData<StopDetails>
+    lateinit var journeyOptionsLive: LiveData<List<TripJourney>>
 
     fun startTripPlan(origin: String, destination: String, dateString: String, timeString: String)
     {
-        tripOptionsLive = NetworkRepository().planTrip(origin, destination, dateString, timeString)
+        NetworkRepository().planTrip(origin, destination, dateString, timeString).let {
+            initialStopLive = it.initialStopLive
+            finalDestinationLive = it.finalDestinationLive
+            journeyOptionsLive = it.journeyOptionsLive
+        }
     }
 }

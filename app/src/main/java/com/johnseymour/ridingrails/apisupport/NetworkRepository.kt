@@ -52,11 +52,14 @@ class NetworkRepository
     }
 
 
-    fun planTrip(originString: String, destinationString: String, dateString: String, timeString: String): LiveData<TripOptions>
+    fun planTrip(originString: String, destinationString: String, dateString: String, timeString: String): TripOptionsUpdates
     {
-        val responseLiveData = MutableLiveData<TripOptions>()
+        //Calling activities can individually observe each separate API call as it gets a response
+        val originLiveData = MutableLiveData<StopDetails>()
+        val destinationLiveData = MutableLiveData<StopDetails>()
+        val plannedTripsLiveData = MutableLiveData<List<TripJourney>>()
         //Wait until both promises for retrieving stop details are resolved before making TripPlan API call
-        combine(getStopDetails(originString), getStopDetails(destinationString)).success {
+        combine(getStopDetails(originString, originLiveData), getStopDetails(destinationString, destinationLiveData)).success {
             val origin = it.first
             val destination = it.second
 
@@ -68,7 +71,7 @@ class NetworkRepository
                 override fun onResponse(call: Call<Array<TripJourney>>, response: Response<Array<TripJourney>>)
                 {
                     val trip = response.body()?.toList() ?: return
-                    responseLiveData.postValue(TripOptions(origin, destination, trip))
+                    plannedTripsLiveData.postValue(trip)
                 }
 
                 override fun onFailure(call: Call<Array<TripJourney>>, t: Throwable)
@@ -78,7 +81,7 @@ class NetworkRepository
             })
         }
 
-        return responseLiveData
+        return TripOptionsUpdates(originLiveData, destinationLiveData, plannedTripsLiveData)
     }
 
 
@@ -90,7 +93,7 @@ class NetworkRepository
         return stopDetailsCache.filterKeys { it.toLowerCase(Locale.getDefault()).contains(searchTerm) }.values.firstOrNull()
     }
 
-    private fun getStopDetails(stopString: String): Promise<StopDetails, Throwable>
+    private fun getStopDetails(stopString: String, liveData: MutableLiveData<StopDetails>): Promise<StopDetails, Throwable>
     {
         val deferred = deferred<StopDetails, Throwable>()
         val searchTerm = stopString.toLowerCase(Locale.getDefault())
@@ -114,6 +117,8 @@ class NetworkRepository
                     //Add reference to same StopDetails but using what the user entered as the index, because they might type
                     //something similar next time
                     stopDetailsCache[searchTerm] = it
+
+                    liveData.postValue(it)
 
                     //Resolve the promise for this deferred
                     deferred.resolve(it)

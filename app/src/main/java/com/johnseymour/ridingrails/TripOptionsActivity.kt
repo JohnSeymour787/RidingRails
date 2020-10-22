@@ -8,7 +8,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
 import com.johnseymour.ridingrails.apisupport.NetworkRepository
 import com.johnseymour.ridingrails.models.TripJourney
-import com.johnseymour.ridingrails.models.TripOptions
 import com.johnseymour.ridingrails.models.TripOptionsViewModel
 import com.johnseymour.ridingrails.models.TripSearchViewModel
 
@@ -36,17 +35,29 @@ class TripOptionsActivity : AppCompatActivity()
         val timeString = intent.getStringExtra(TIME_KEY) ?: ""
 
         viewModel.startTripPlan(originString, destinationString, dateString, timeString)
-        //Observe the API call's response, which is modularised to post an update when
-        //each TripOption property is updated from an individual response.
-        viewModel.tripOptionsLive.observe(this) {
-            val origName = it.initialStop.disassembledName
-            val destName = it.finalDestination.disassembledName
-            val numberOfJourneys = it.journeyOptions.size
+
+        //Observe the API call's response for the initial stop data
+        viewModel.initialStopLive.observe(this) {
+            val origName = it.disassembledName
+            val cak = ""
+        }
+
+        //Observe the API call's response for the final destination stop data
+        viewModel.finalDestinationLive.observe(this) {
+            val origName = it.disassembledName
+            val cak = ""
+        }
+
+        //Observe the API call's response for the full list of journey options
+        viewModel.journeyOptionsLive.observe(this) {
+            val origName = it.size
+            val cak = ""
         }
     }
 
     companion object
     {
+        /**Return an Intent to this activity will all necessary string parameters to make a TripPlan API call.**/
         fun planTripIntent(context: Context, origin: String, destination: String, dateString: String, timeString: String): Intent
         {
             return Intent(context, TripOptionsActivity::class.java).apply {

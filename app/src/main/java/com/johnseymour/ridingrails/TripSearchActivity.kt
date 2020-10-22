@@ -12,7 +12,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.johnseymour.ridingrails.apisupport.NetworkRepository
 import com.johnseymour.ridingrails.apisupport.TripLegDeserialiser
-import com.johnseymour.ridingrails.models.TripOptions
 import com.johnseymour.ridingrails.models.TripSearchViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import java.time.ZonedDateTime
