@@ -16,17 +16,18 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.Locale
 
 
-//TODO() Make singleton class
-class NetworkRepository
+object NetworkRepository
 {
-    private val stopDetailsCache = mutableMapOf<String, StopDetails>()
+    private val stopDetailsCache by lazy {
+        mutableMapOf<String, StopDetails>()
+    }
 
     private val tripPlannerAPI by lazy {
         val gsonBuilder = GsonBuilder().run {
-            registerTypeAdapter(StopDetails::class.java, StopDetailsDeserialiser())
-            registerTypeAdapter(PlatformDetails::class.java, PlatformDetailsDeserialiser())
-            registerTypeAdapter(TripLeg::class.java, TripLegDeserialiser())
-            registerTypeAdapter(Array<TripJourney>::class.java, TripJourneyArrayDeserialiser())
+            registerTypeAdapter(StopDetails::class.java, StopDetailsDeserialiser)
+            registerTypeAdapter(PlatformDetails::class.java, PlatformDetailsDeserialiser)
+            registerTypeAdapter(TripLeg::class.java, TripLegDeserialiser)
+            registerTypeAdapter(Array<TripJourney>::class.java, TripJourneyArrayDeserialiser)
             create()
         }
         val gsonConverter = GsonConverterFactory.create(gsonBuilder)

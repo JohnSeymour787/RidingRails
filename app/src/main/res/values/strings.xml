@@ -1,4 +1,6 @@
 <resources>
     <string name="app_name">RidingRails</string>
     <string name="main_button_plan_trip">Plan Trip</string>
+    <string name="trip_options_cell_price">$%1$.2f</string>
+    <string name="trip_options_title_label">Trip Options For:</string>
 </resources>

@@ -9,7 +9,7 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
-internal class PlatformDetailsDeserialiser: JsonDeserializer<PlatformDetails>
+internal object PlatformDetailsDeserialiser: JsonDeserializer<PlatformDetails>
 {
     override fun deserialize(json: JsonElement?, typeOfT: Type?, context: JsonDeserializationContext?): PlatformDetails?
     {
@@ -37,22 +37,21 @@ internal class PlatformDetailsDeserialiser: JsonDeserializer<PlatformDetails>
         return PlatformDetails(platformID, parentStopID, name, time1, time2)
     }
 
-    companion object
-    {
-        private val formatter = DateTimeFormatter.ISO_DATE_TIME.apply {
+    private val dateTimeStringFormatter by lazy {
+        DateTimeFormatter.ISO_DATE_TIME.apply {
             withZone(ZoneId.systemDefault())
         }
-        //TODO() This could be made an extension to the string class, might need it later for getting user input
-        private fun timeStringToObject(time: String?): ZonedDateTime?
+    }
+
+    private fun timeStringToObject(time: String?): ZonedDateTime?
+    {
+        return try
         {
-            return try
-            {
-                ZonedDateTime.parse(time, formatter)
-            }
-            catch (e: NullPointerException)
-            {
-                null
-            }
+            ZonedDateTime.parse(time, dateTimeStringFormatter)
+        }
+        catch (e: NullPointerException)
+        {
+            null
         }
     }
 }

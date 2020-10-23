@@ -2,39 +2,23 @@ package com.johnseymour.ridingrails.models
 
 import android.content.Context
 import android.content.Intent
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.johnseymour.ridingrails.TripOptionsActivity
-import com.johnseymour.ridingrails.apisupport.NetworkRepository
-import java.time.ZoneId
 import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
 
 class TripSearchViewModel: ViewModel()
 {
-    var origin = ""
-    var destination = ""
+    var origin = "central"          //TODO() Change back to empty string
+    var destination = "museum"      //TODO() Change back to empty string
     var plannedTime: ZonedDateTime = ZonedDateTime.now()
     val dateString: String
-        get() = plannedTime.format(dateFormatter)
+        get() = plannedTime.format(Constants.Formatters.dateFormatter)
     val timeString: String
-        get() = plannedTime.format(timeFormatter)
+        get() = plannedTime.format(Constants.Formatters.timeFormatter)
 
     fun planTripIntent(context: Context): Intent
     {
         return TripOptionsActivity.planTripIntent(context, origin, destination, plannedTime.toAPIDateString(), plannedTime.toAPITimeString())
-    }
-
-    companion object
-    {
-        private val dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL).apply {
-            withZone(ZoneId.systemDefault())
-        }
-
-        private val timeFormatter = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).apply {
-            withZone(ZoneId.systemDefault())
-        }
     }
 
     /**Extension methods to get date and time strings in a format that the API accepts**/

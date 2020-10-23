@@ -8,13 +8,11 @@ import android.view.View
 import android.widget.DatePicker
 import android.widget.TimePicker
 import androidx.core.widget.doOnTextChanged
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.johnseymour.ridingrails.apisupport.NetworkRepository
-import com.johnseymour.ridingrails.apisupport.TripLegDeserialiser
 import com.johnseymour.ridingrails.models.TripSearchViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import java.time.ZonedDateTime
+import java.time.temporal.TemporalAdjuster
 
 class TripSearchActivity : AppCompatActivity()
 {
