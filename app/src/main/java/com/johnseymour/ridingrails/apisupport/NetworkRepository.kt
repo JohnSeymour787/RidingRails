@@ -1,10 +1,9 @@
 package com.johnseymour.ridingrails.apisupport
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.google.gson.GsonBuilder
-import com.johnseymour.ridingrails.models.PlatformDetails
-import com.johnseymour.ridingrails.models.StopDetails
-import com.johnseymour.ridingrails.models.TripJourney
-import com.johnseymour.ridingrails.models.TripLeg
+import com.johnseymour.ridingrails.models.*
 import nl.komponents.kovenant.Promise
 import nl.komponents.kovenant.combine.combine
 import nl.komponents.kovenant.deferred
@@ -14,18 +13,21 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.util.*
+import java.util.Locale
 
-class NetworkRepository
+
+object NetworkRepository
 {
-    private val stopDetailsCache = mutableMapOf<String, StopDetails>()
+    private val stopDetailsCache by lazy {
+        mutableMapOf<String, StopDetails>()
+    }
 
     private val tripPlannerAPI by lazy {
         val gsonBuilder = GsonBuilder().run {
-            registerTypeAdapter(StopDetails::class.java, StopDetailsDeserialiser())
-            registerTypeAdapter(PlatformDetails::class.java, PlatformDetailsDeserialiser())
-            registerTypeAdapter(TripLeg::class.java, TripLegDeserialiser())
-            registerTypeAdapter(Array<TripJourney>::class.java, TripOptionsDeserialiser())
+            registerTypeAdapter(StopDetails::class.java, StopDetailsDeserialiser)
+            registerTypeAdapter(PlatformDetails::class.java, PlatformDetailsDeserialiser)
+            registerTypeAdapter(TripLeg::class.java, TripLegDeserialiser)
+            registerTypeAdapter(Array<TripJourney>::class.java, TripJourneyArrayDeserialiser)
             create()
         }
         val gsonConverter = GsonConverterFactory.create(gsonBuilder)
@@ -50,22 +52,27 @@ class NetworkRepository
         retrofit.create(NSWTripPlannerAPI::class.java)
     }
 
-    fun planTrip(originString: String, destinationString: String)
-    {
 
+    fun planTrip(originString: String, destinationString: String, dateString: String, timeString: String): TripOptionsUpdates
+    {
+        //Calling activities can individually observe each separate API call as it gets a response
+        val originLiveData = MutableLiveData<StopDetails>()
+        val destinationLiveData = MutableLiveData<StopDetails>()
+        val plannedTripsLiveData = MutableLiveData<List<TripJourney>>()
         //Wait until both promises for retrieving stop details are resolved before making TripPlan API call
-        combine(getStopDetails(originString), getStopDetails(destinationString)).success {
+        combine(getStopDetails(originString, originLiveData), getStopDetails(destinationString, destinationLiveData)).success {
             val origin = it.first
             val destination = it.second
 
-            val requestCall = tripPlannerAPI.planTrip(origin.id, destination.id)
+            val requestCall = tripPlannerAPI.planTrip(origin.id, destination.id, dateString, timeString)
 
+            //Make asynchronous call to TripPlanner endpoint
             requestCall.enqueue(object: Callback<Array<TripJourney>>
             {
                 override fun onResponse(call: Call<Array<TripJourney>>, response: Response<Array<TripJourney>>)
                 {
-                    val trip = response.body()?.toList()
-                    val cake = 2
+                    val trip = response.body()?.toList() ?: return
+                    plannedTripsLiveData.postValue(trip)
                 }
 
                 override fun onFailure(call: Call<Array<TripJourney>>, t: Throwable)
@@ -74,6 +81,8 @@ class NetworkRepository
                 }
             })
         }
+
+        return TripOptionsUpdates(originLiveData, destinationLiveData, plannedTripsLiveData)
     }
 
 
@@ -85,7 +94,7 @@ class NetworkRepository
         return stopDetailsCache.filterKeys { it.toLowerCase(Locale.getDefault()).contains(searchTerm) }.values.firstOrNull()
     }
 
-    private fun getStopDetails(stopString: String): Promise<StopDetails, Throwable>
+    private fun getStopDetails(stopString: String, liveData: MutableLiveData<StopDetails>): Promise<StopDetails, Throwable>
     {
         val deferred = deferred<StopDetails, Throwable>()
         val searchTerm = stopString.toLowerCase(Locale.getDefault())
@@ -110,11 +119,14 @@ class NetworkRepository
                     //something similar next time
                     stopDetailsCache[searchTerm] = it
 
+                    liveData.postValue(it)
+
                     //Resolve the promise for this deferred
                     deferred.resolve(it)
                 }
             }
 
+            //TODO() Need to handle failure to connect to API (show a dialogue or smt) <- Test with phone turning WiFi and Mobile Data off
             //Failure error needs to be handled elsewhere
             override fun onFailure(call: Call<StopDetails>, t: Throwable) = deferred.reject(t)
         })

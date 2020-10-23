@@ -8,7 +8,7 @@ import com.johnseymour.ridingrails.models.TravelMode
 import com.johnseymour.ridingrails.models.TripLeg
 import java.lang.reflect.Type
 
-class TripLegDeserialiser: JsonDeserializer<TripLeg>
+internal object TripLegDeserialiser: JsonDeserializer<TripLeg>
 {
     override fun deserialize(json: JsonElement?, typeOfT: Type?, context: JsonDeserializationContext?): TripLeg?
     {
