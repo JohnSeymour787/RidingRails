@@ -55,9 +55,9 @@ object NetworkRepository
     fun planTrip(originString: String, destinationString: String, dateString: String, timeString: String): TripOptionsUpdates
     {
         //Calling activities can individually observe each separate API call as it gets a response
-        val originLiveData = MutableLiveData<StopDetails>()
-        val destinationLiveData = MutableLiveData<StopDetails>()
-        val plannedTripsLiveData = MutableLiveData<List<TripJourney>>()
+        val originLiveData = MutableLiveData<StatusData<StopDetails>>()
+        val destinationLiveData = MutableLiveData<StatusData<StopDetails>>()
+        val plannedTripsLiveData = MutableLiveData<StatusData<List<TripJourney>>>()
         //Wait until both promises for retrieving stop details are resolved before making TripPlan API call
         combine(getStopDetails(originString, originLiveData), getStopDetails(destinationString, destinationLiveData)).success {
             val origin = it.first
@@ -71,19 +71,17 @@ object NetworkRepository
                 override fun onResponse(call: Call<Array<TripJourney>>, response: Response<Array<TripJourney>>)
                 {
                     val trip = response.body()?.toList() ?: return
-                    plannedTripsLiveData.postValue(trip)
+                    //Post a successful status-wrapped data
+                    plannedTripsLiveData.postValue(StatusData.success(trip))
                 }
 
                 override fun onFailure(call: Call<Array<TripJourney>>, t: Throwable)
                 {
-                    t.localizedMessage
+                    //Post a failed status-wrapped data
+                    plannedTripsLiveData.postValue(StatusData.failure(t.message))
                 }
             })
-        }.fail {
-            val error = it.localizedMessage
-            val cak = 2
         }
-
 
         return TripOptionsUpdates(originLiveData, destinationLiveData, plannedTripsLiveData)
     }
@@ -97,7 +95,8 @@ object NetworkRepository
         return stopDetailsCache.filterKeys { it.toLowerCase(Locale.getDefault()).contains(searchTerm) }.values.firstOrNull()
     }
 
-    private fun getStopDetails(stopString: String, liveData: MutableLiveData<StopDetails>): Promise<StopDetails, Throwable>
+
+    private fun getStopDetails(stopString: String, liveData: MutableLiveData<StatusData<StopDetails>>): Promise<StopDetails, Throwable>
     {
         val deferred = deferred<StopDetails, Throwable>()
         val searchTerm = stopString.toLowerCase(Locale.getDefault())
@@ -122,7 +121,7 @@ object NetworkRepository
                     //something similar next time
                     stopDetailsCache[searchTerm] = it
 
-                    liveData.postValue(it)
+                    liveData.postValue(StatusData.success(it))
 
                     //Resolve the promise for this deferred
                     deferred.resolve(it)
@@ -130,7 +129,11 @@ object NetworkRepository
             }
 
             //Failure error needs to be handled elsewhere
-            override fun onFailure(call: Call<StopDetails>, t: Throwable) = deferred.reject(t)
+            override fun onFailure(call: Call<StopDetails>, t: Throwable)
+            {
+                deferred.reject(t)
+                liveData.postValue(StatusData.failure(t.message))
+            }
         })
 
         return deferred.promise

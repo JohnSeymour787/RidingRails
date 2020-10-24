@@ -4,8 +4,12 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Message
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.johnseymour.ridingrails.apisupport.Status
+import com.johnseymour.ridingrails.models.TripJourney
 import com.johnseymour.ridingrails.models.TripOptionListAdapter
 import com.johnseymour.ridingrails.models.TripOptionsViewModel
 import kotlinx.android.synthetic.main.activity_trip_options.*
@@ -21,6 +25,11 @@ class TripOptionsActivity : AppCompatActivity()
     private val viewModel by lazy {
         ViewModelProvider(this).get(TripOptionsViewModel::class.java)
     }
+
+    /*As there are multiple LiveData's to observe, and any one of which can fail,
+    * only want to make sure that one error message is shown to the user.
+    **/
+    private var networkErrorOccurred = false
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -40,32 +49,61 @@ class TripOptionsActivity : AppCompatActivity()
 
         //Observe the API call's response for the initial stop data
         viewModel.initialStopLive.observe(this) {
-            origin.text = it.disassembledName
+            if (it.status == Status.SUCCESS)
+            {
+                origin.text = it.data?.disassembledName
+            }
+            else
+            {
+                showNetworkError(it.message)
+            }
         }
 
         //Observe the API call's response for the final destination stop data
         viewModel.finalDestinationLive.observe(this) {
-            destination.text = it.disassembledName
+            if (it.status == Status.SUCCESS)
+            {
+                destination.text = it?.data?.disassembledName
+            }
+            else
+            {
+                showNetworkError(it.message)
+            }
         }
 
         //Observe the API call's response for the full list of journey options
         viewModel.journeyOptionsLive.observe(this) {
-            time.text = it.size.toString()
-            tripOptionsList.adapter = TripOptionListAdapter(it)
+            if (it.status == Status.SUCCESS)
+            {
+                time.text = it?.data?.size.toString()
+                tripOptionsList.adapter = TripOptionListAdapter(it?.data ?: listOf())
+            }
+            else
+            {
+                showNetworkError(it.message)
+            }
+        }
+    }
+
+    private fun showNetworkError(errorMessage: String?)
+    {
+        if (!networkErrorOccurred)
+        {
+            Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show()
+            networkErrorOccurred = true
         }
     }
 
     companion object
     {
         /**Return an Intent to this activity will all necessary string parameters to make a TripPlan API call.**/
-        fun planTripIntent(context: Context, origin: String, destination: String, dateString: String, timeString: String, dat: LocalDateTime? = null): Intent
+        fun planTripIntent(context: Context, origin: String, destination: String, dateString: String, timeString: String): Intent
         {
             return Intent(context, TripOptionsActivity::class.java).apply {
                 putExtra(ORIGIN_KEY, origin)
                 putExtra(DESTINATION_KEY, destination)
                 putExtra(DATE_KEY, dateString)
                 putExtra(TIME_KEY, timeString)
-                //putExtra(TIME_KEY, dat)               //TODO() Decide to pass this or not
             }
         }
     }

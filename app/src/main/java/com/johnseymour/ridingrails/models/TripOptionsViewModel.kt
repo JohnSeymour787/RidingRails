@@ -3,12 +3,13 @@ package com.johnseymour.ridingrails.models
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.johnseymour.ridingrails.apisupport.NetworkRepository
+import com.johnseymour.ridingrails.apisupport.StatusData
 
 class TripOptionsViewModel: ViewModel()
 {
-    lateinit var initialStopLive: LiveData<StopDetails>
-    lateinit var finalDestinationLive: LiveData<StopDetails>
-    lateinit var journeyOptionsLive: LiveData<List<TripJourney>>
+    lateinit var initialStopLive: LiveData<StatusData<StopDetails>>
+    lateinit var finalDestinationLive: LiveData<StatusData<StopDetails>>
+    lateinit var journeyOptionsLive: LiveData<StatusData<List<TripJourney>>>
 
     fun startTripPlan(origin: String, destination: String, dateString: String, timeString: String)
     {
