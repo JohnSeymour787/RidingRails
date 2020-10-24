@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.johnseymour.ridingrails.models.TripOptionListAdapter
 import com.johnseymour.ridingrails.models.TripOptionsViewModel
 import kotlinx.android.synthetic.main.activity_trip_options.*
-import java.time.ZonedDateTime
+import java.time.LocalDateTime
 
 private const val ORIGIN_KEY = "origin_key"
 private const val DESTINATION_KEY = "destination_key"
@@ -58,7 +58,7 @@ class TripOptionsActivity : AppCompatActivity()
     companion object
     {
         /**Return an Intent to this activity will all necessary string parameters to make a TripPlan API call.**/
-        fun planTripIntent(context: Context, origin: String, destination: String, dateString: String, timeString: String, dat: ZonedDateTime? = null): Intent
+        fun planTripIntent(context: Context, origin: String, destination: String, dateString: String, timeString: String, dat: LocalDateTime? = null): Intent
         {
             return Intent(context, TripOptionsActivity::class.java).apply {
                 putExtra(ORIGIN_KEY, origin)

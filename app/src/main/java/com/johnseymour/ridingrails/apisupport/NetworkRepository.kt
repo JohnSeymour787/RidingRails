@@ -1,6 +1,5 @@
 package com.johnseymour.ridingrails.apisupport
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.GsonBuilder
 import com.johnseymour.ridingrails.models.*
@@ -77,10 +76,14 @@ object NetworkRepository
 
                 override fun onFailure(call: Call<Array<TripJourney>>, t: Throwable)
                 {
-
+                    t.localizedMessage
                 }
             })
+        }.fail {
+            val error = it.localizedMessage
+            val cak = 2
         }
+
 
         return TripOptionsUpdates(originLiveData, destinationLiveData, plannedTripsLiveData)
     }
@@ -126,7 +129,6 @@ object NetworkRepository
                 }
             }
 
-            //TODO() Need to handle failure to connect to API (show a dialogue or smt) <- Test with phone turning WiFi and Mobile Data off
             //Failure error needs to be handled elsewhere
             override fun onFailure(call: Call<StopDetails>, t: Throwable) = deferred.reject(t)
         })

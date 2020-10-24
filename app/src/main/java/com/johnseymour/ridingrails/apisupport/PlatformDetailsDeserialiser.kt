@@ -5,8 +5,8 @@ import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement
 import com.johnseymour.ridingrails.models.PlatformDetails
 import java.lang.reflect.Type
+import java.time.LocalDateTime
 import java.time.ZoneId
-import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
 internal object PlatformDetailsDeserialiser: JsonDeserializer<PlatformDetails>
@@ -43,11 +43,11 @@ internal object PlatformDetailsDeserialiser: JsonDeserializer<PlatformDetails>
         }
     }
 
-    private fun timeStringToObject(time: String?): ZonedDateTime?
+    private fun timeStringToObject(time: String?): LocalDateTime?
     {
         return try
         {
-            ZonedDateTime.parse(time, dateTimeStringFormatter)
+            LocalDateTime.parse(time, dateTimeStringFormatter)
         }
         catch (e: NullPointerException)
         {

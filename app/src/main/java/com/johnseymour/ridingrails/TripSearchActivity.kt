@@ -11,8 +11,7 @@ import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.ViewModelProvider
 import com.johnseymour.ridingrails.models.TripSearchViewModel
 import kotlinx.android.synthetic.main.activity_main.*
-import java.time.ZonedDateTime
-import java.time.temporal.TemporalAdjuster
+import java.time.LocalDateTime
 
 class TripSearchActivity : AppCompatActivity()
 {
@@ -84,5 +83,5 @@ class TripSearchActivity : AppCompatActivity()
     }
 }
 
-private fun ZonedDateTime.updatedDate(year: Int, month: Int, day: Int): ZonedDateTime = withYear(year).withMonth(month).withDayOfMonth(day)
-private fun ZonedDateTime.updatedTime(hour: Int, minute: Int): ZonedDateTime = withHour(hour).withMinute(minute)
+private fun LocalDateTime.updatedDate(year: Int, month: Int, day: Int): LocalDateTime = withYear(year).withMonth(month).withDayOfMonth(day)
+private fun LocalDateTime.updatedTime(hour: Int, minute: Int): LocalDateTime = withHour(hour).withMinute(minute)
