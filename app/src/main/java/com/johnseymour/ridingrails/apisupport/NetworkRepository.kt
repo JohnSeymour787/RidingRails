@@ -1,9 +1,9 @@
 package com.johnseymour.ridingrails.apisupport
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.GsonBuilder
-import com.johnseymour.ridingrails.models.*
+import com.johnseymour.ridingrails.apisupport.models.StatusData
+import com.johnseymour.ridingrails.models.data.*
 import nl.komponents.kovenant.Promise
 import nl.komponents.kovenant.combine.combine
 import nl.komponents.kovenant.deferred
@@ -18,6 +18,10 @@ import java.util.Locale
 
 object NetworkRepository
 {
+    private const val API_DEV_KEY = "apikey U1hcbdCBk2g6Zb1ll7pHczm9Gpv7XwIRZCt9"
+    private const val API_BASE_URL = "https://api.transport.nsw.gov.au/v1/tp/"
+
+
     private val stopDetailsCache by lazy {
         mutableMapOf<String, StopDetails>()
     }
@@ -36,7 +40,7 @@ object NetworkRepository
         val httpClient = OkHttpClient.Builder().apply {
             addInterceptor {
                 val request = it.request().newBuilder().apply {
-                    header("Authorization", "apikey U1hcbdCBk2g6Zb1ll7pHczm9Gpv7XwIRZCt9")
+                    header("Authorization", API_DEV_KEY)
                     method(it.request().method(), it.request().body())
                 }.build()
 
@@ -44,7 +48,7 @@ object NetworkRepository
             }.build()
         }.build()
 
-        val retrofit = Retrofit.Builder().baseUrl("https://api.transport.nsw.gov.au/v1/tp/")
+        val retrofit = Retrofit.Builder().baseUrl(API_BASE_URL)
         .addConverterFactory(gsonConverter)
         .client(httpClient)
         .build()
@@ -56,9 +60,9 @@ object NetworkRepository
     fun planTrip(originString: String, destinationString: String, dateString: String, timeString: String): TripOptionsUpdates
     {
         //Calling activities can individually observe each separate API call as it gets a response
-        val originLiveData = MutableLiveData<StopDetails>()
-        val destinationLiveData = MutableLiveData<StopDetails>()
-        val plannedTripsLiveData = MutableLiveData<List<TripJourney>>()
+        val originLiveData = MutableLiveData<StatusData<StopDetails>>()
+        val destinationLiveData = MutableLiveData<StatusData<StopDetails>>()
+        val plannedTripsLiveData = MutableLiveData<StatusData<List<TripJourney>>>()
         //Wait until both promises for retrieving stop details are resolved before making TripPlan API call
         combine(getStopDetails(originString, originLiveData), getStopDetails(destinationString, destinationLiveData)).success {
             val origin = it.first
@@ -72,12 +76,14 @@ object NetworkRepository
                 override fun onResponse(call: Call<Array<TripJourney>>, response: Response<Array<TripJourney>>)
                 {
                     val trip = response.body()?.toList() ?: return
-                    plannedTripsLiveData.postValue(trip)
+                    //Post a successful status-wrapped data
+                    plannedTripsLiveData.postValue(StatusData.success(trip))
                 }
 
                 override fun onFailure(call: Call<Array<TripJourney>>, t: Throwable)
                 {
-
+                    //Post a failed status-wrapped data
+                    plannedTripsLiveData.postValue(StatusData.failure(t.message))
                 }
             })
         }
@@ -94,7 +100,8 @@ object NetworkRepository
         return stopDetailsCache.filterKeys { it.toLowerCase(Locale.getDefault()).contains(searchTerm) }.values.firstOrNull()
     }
 
-    private fun getStopDetails(stopString: String, liveData: MutableLiveData<StopDetails>): Promise<StopDetails, Throwable>
+
+    private fun getStopDetails(stopString: String, liveData: MutableLiveData<StatusData<StopDetails>>): Promise<StopDetails, Throwable>
     {
         val deferred = deferred<StopDetails, Throwable>()
         val searchTerm = stopString.toLowerCase(Locale.getDefault())
@@ -119,16 +126,19 @@ object NetworkRepository
                     //something similar next time
                     stopDetailsCache[searchTerm] = it
 
-                    liveData.postValue(it)
+                    liveData.postValue(StatusData.success(it))
 
                     //Resolve the promise for this deferred
                     deferred.resolve(it)
                 }
             }
 
-            //TODO() Need to handle failure to connect to API (show a dialogue or smt) <- Test with phone turning WiFi and Mobile Data off
             //Failure error needs to be handled elsewhere
-            override fun onFailure(call: Call<StopDetails>, t: Throwable) = deferred.reject(t)
+            override fun onFailure(call: Call<StopDetails>, t: Throwable)
+            {
+                deferred.reject(t)
+                liveData.postValue(StatusData.failure(t.message))
+            }
         })
 
         return deferred.promise

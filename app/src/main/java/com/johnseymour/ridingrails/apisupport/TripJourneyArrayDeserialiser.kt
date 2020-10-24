@@ -3,8 +3,8 @@ package com.johnseymour.ridingrails.apisupport
 import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement
-import com.johnseymour.ridingrails.models.TripJourney
-import com.johnseymour.ridingrails.models.TripLeg
+import com.johnseymour.ridingrails.models.data.TripJourney
+import com.johnseymour.ridingrails.models.data.TripLeg
 import java.lang.reflect.Type
 
 internal object TripJourneyArrayDeserialiser: JsonDeserializer<Array<TripJourney>>
@@ -28,7 +28,7 @@ internal object TripJourneyArrayDeserialiser: JsonDeserializer<Array<TripJourney
                 val legsArray = context?.deserialize<Array<TripLeg?>>(
                                             it.getAsJsonArray("legs"),
                                             Array<TripLeg?>::class.java
-                                            )?.toList()?.filterNotNull() ?: return@forEach
+                                                                     )?.toList()?.filterNotNull() ?: return@forEach
 
                 //legsArray can be empty if the legs are not TravelMode.Train. Therefore, don't add
                 if (legsArray.isNotEmpty())

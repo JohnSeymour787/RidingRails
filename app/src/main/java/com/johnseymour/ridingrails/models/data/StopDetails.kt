@@ -1,4 +1,4 @@
-package com.johnseymour.ridingrails.models
+package com.johnseymour.ridingrails.models.data
 
 data class StopDetails(
     val id: Int,

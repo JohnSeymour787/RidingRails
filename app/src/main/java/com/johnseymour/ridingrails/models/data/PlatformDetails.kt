@@ -1,6 +1,6 @@
-package com.johnseymour.ridingrails.models
+package com.johnseymour.ridingrails.models.data
 
-import java.time.ZonedDateTime
+import java.time.LocalDateTime
 
 data class PlatformDetails(
     val platformID: Int,
@@ -13,9 +13,9 @@ data class PlatformDetails(
     //origin -> departureEstimated
     //destination -> arrivalPlanned
     //stopSequence -> arrivalPlanned
-    val time1: ZonedDateTime?,
+    val time1: LocalDateTime?,
     //origin -> departurePlanned
     //destination -> arrivalEstimated
     //stopSequence -> departurePlanned
-    val time2: ZonedDateTime?,
+    val time2: LocalDateTime?,
 )

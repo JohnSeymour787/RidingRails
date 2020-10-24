@@ -3,9 +3,9 @@ package com.johnseymour.ridingrails.apisupport
 import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement
-import com.johnseymour.ridingrails.models.PlatformDetails
-import com.johnseymour.ridingrails.models.TravelMode
-import com.johnseymour.ridingrails.models.TripLeg
+import com.johnseymour.ridingrails.models.data.PlatformDetails
+import com.johnseymour.ridingrails.models.data.TravelMode
+import com.johnseymour.ridingrails.models.data.TripLeg
 import java.lang.reflect.Type
 
 internal object TripLegDeserialiser: JsonDeserializer<TripLeg>

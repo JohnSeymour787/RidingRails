@@ -1,6 +1,7 @@
-package com.johnseymour.ridingrails.models
+package com.johnseymour.ridingrails.models.data
 
-import java.time.ZonedDateTime
+import com.johnseymour.ridingrails.Constants
+import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
 data class TripJourney(
@@ -24,7 +25,7 @@ data class TripJourney(
         {
             legs.firstOrNull()?.origin?.time1?.let {
                 //Need to create the .now() instead, even in onBind() for accurate times
-                return ZonedDateTime.now().until(it, ChronoUnit.MINUTES).toString()
+                return LocalDateTime.now().until(it, ChronoUnit.MINUTES).toString()
             }
             return ""
         }
