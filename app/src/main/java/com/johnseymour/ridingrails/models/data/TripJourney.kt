@@ -1,5 +1,6 @@
-package com.johnseymour.ridingrails.models
+package com.johnseymour.ridingrails.models.data
 
+import com.johnseymour.ridingrails.Constants
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 

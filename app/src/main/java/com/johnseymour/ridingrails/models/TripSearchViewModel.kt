@@ -3,6 +3,7 @@ package com.johnseymour.ridingrails.models
 import android.content.Context
 import android.content.Intent
 import androidx.lifecycle.ViewModel
+import com.johnseymour.ridingrails.Constants
 import com.johnseymour.ridingrails.TripOptionsActivity
 import java.time.LocalDateTime
 
@@ -18,7 +19,8 @@ class TripSearchViewModel: ViewModel()
 
     fun planTripIntent(context: Context): Intent
     {
-        return TripOptionsActivity.planTripIntent(context, origin, destination, plannedTime.format(Constants.Formatters.APIDateFormatter), plannedTime.toAPITimeString())
+        return TripOptionsActivity.planTripIntent(context, origin, destination, plannedTime.format(
+            Constants.Formatters.APIDateFormatter), plannedTime.toAPITimeString())
     }
 
     /**Extension method to get time string in a format that the API accepts**/

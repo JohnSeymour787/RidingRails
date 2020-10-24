@@ -6,6 +6,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.johnseymour.ridingrails.R
 import com.johnseymour.ridingrails.TripOptionViewCell
+import com.johnseymour.ridingrails.models.data.TripJourney
 import kotlinx.android.synthetic.main.list_cell_trip_option.view.*
 
 class TripOptionListAdapter(private val trips: List<TripJourney>): RecyclerView.Adapter<TripOptionListAdapter.TripOptionViewHolder>()

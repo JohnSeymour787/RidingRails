@@ -3,7 +3,9 @@ package com.johnseymour.ridingrails.models
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.johnseymour.ridingrails.apisupport.NetworkRepository
-import com.johnseymour.ridingrails.apisupport.StatusData
+import com.johnseymour.ridingrails.apisupport.models.StatusData
+import com.johnseymour.ridingrails.models.data.StopDetails
+import com.johnseymour.ridingrails.models.data.TripJourney
 
 class TripOptionsViewModel: ViewModel()
 {

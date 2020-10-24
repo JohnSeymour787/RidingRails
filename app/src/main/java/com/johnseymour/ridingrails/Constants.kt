@@ -1,4 +1,4 @@
-package com.johnseymour.ridingrails.models
+package com.johnseymour.ridingrails
 
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle

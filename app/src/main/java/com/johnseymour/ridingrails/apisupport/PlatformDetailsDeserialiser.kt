@@ -3,7 +3,7 @@ package com.johnseymour.ridingrails.apisupport
 import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement
-import com.johnseymour.ridingrails.models.PlatformDetails
+import com.johnseymour.ridingrails.models.data.PlatformDetails
 import java.lang.reflect.Type
 import java.time.LocalDateTime
 import java.time.ZoneId

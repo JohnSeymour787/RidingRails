@@ -1,7 +1,7 @@
-package com.johnseymour.ridingrails.models
+package com.johnseymour.ridingrails.models.data
 
 import androidx.lifecycle.LiveData
-import com.johnseymour.ridingrails.apisupport.StatusData
+import com.johnseymour.ridingrails.apisupport.models.StatusData
 
 /**Represents all sets of LiveData needed in the TripOptions Activity. As the API call progresses
  * (with its, sub calls), each live property will be posted to with updates. Data is wrapped with

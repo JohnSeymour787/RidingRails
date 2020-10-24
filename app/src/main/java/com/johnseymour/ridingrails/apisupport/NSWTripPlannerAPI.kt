@@ -1,7 +1,7 @@
 package com.johnseymour.ridingrails.apisupport
 
-import com.johnseymour.ridingrails.models.StopDetails
-import com.johnseymour.ridingrails.models.TripJourney
+import com.johnseymour.ridingrails.models.data.StopDetails
+import com.johnseymour.ridingrails.models.data.TripJourney
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query

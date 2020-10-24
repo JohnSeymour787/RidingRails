@@ -1,4 +1,4 @@
-package com.johnseymour.ridingrails.models
+package com.johnseymour.ridingrails.models.data
 
 enum class TravelMode(val modeID: Int)
 {

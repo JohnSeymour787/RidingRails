@@ -4,16 +4,13 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Message
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.johnseymour.ridingrails.apisupport.Status
-import com.johnseymour.ridingrails.models.TripJourney
+import com.johnseymour.ridingrails.apisupport.models.Status
 import com.johnseymour.ridingrails.models.TripOptionListAdapter
 import com.johnseymour.ridingrails.models.TripOptionsViewModel
 import kotlinx.android.synthetic.main.activity_trip_options.*
-import java.time.LocalDateTime
 
 private const val ORIGIN_KEY = "origin_key"
 private const val DESTINATION_KEY = "destination_key"

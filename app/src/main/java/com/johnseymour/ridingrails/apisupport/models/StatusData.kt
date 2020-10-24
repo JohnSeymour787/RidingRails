@@ -1,4 +1,4 @@
-package com.johnseymour.ridingrails.apisupport
+package com.johnseymour.ridingrails.apisupport.models
 
 /**Used to wrap data with a status of its availability. Used by Network Repository to return
  * Live<StatusData> for activities to observe. When activities see the status as failed, they can

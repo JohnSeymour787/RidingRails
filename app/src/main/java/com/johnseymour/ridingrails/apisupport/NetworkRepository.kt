@@ -2,7 +2,8 @@ package com.johnseymour.ridingrails.apisupport
 
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.GsonBuilder
-import com.johnseymour.ridingrails.models.*
+import com.johnseymour.ridingrails.apisupport.models.StatusData
+import com.johnseymour.ridingrails.models.data.*
 import nl.komponents.kovenant.Promise
 import nl.komponents.kovenant.combine.combine
 import nl.komponents.kovenant.deferred
@@ -17,6 +18,10 @@ import java.util.Locale
 
 object NetworkRepository
 {
+    private const val API_DEV_KEY = "apikey U1hcbdCBk2g6Zb1ll7pHczm9Gpv7XwIRZCt9"
+    private const val API_BASE_URL = "https://api.transport.nsw.gov.au/v1/tp/"
+
+
     private val stopDetailsCache by lazy {
         mutableMapOf<String, StopDetails>()
     }
@@ -35,7 +40,7 @@ object NetworkRepository
         val httpClient = OkHttpClient.Builder().apply {
             addInterceptor {
                 val request = it.request().newBuilder().apply {
-                    header("Authorization", "apikey U1hcbdCBk2g6Zb1ll7pHczm9Gpv7XwIRZCt9")
+                    header("Authorization", API_DEV_KEY)
                     method(it.request().method(), it.request().body())
                 }.build()
 
@@ -43,7 +48,7 @@ object NetworkRepository
             }.build()
         }.build()
 
-        val retrofit = Retrofit.Builder().baseUrl("https://api.transport.nsw.gov.au/v1/tp/")
+        val retrofit = Retrofit.Builder().baseUrl(API_BASE_URL)
         .addConverterFactory(gsonConverter)
         .client(httpClient)
         .build()
