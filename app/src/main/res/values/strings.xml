@@ -3,4 +3,14 @@
     <string name="main_button_plan_trip">Plan Trip</string>
     <string name="trip_options_cell_price">$%1$.2f</string>
     <string name="trip_options_title_label">Trip Options For:</string>
+
+    <plurals name="minutes_from_now">
+        <item quantity="one">%d min</item>
+        <item quantity="other">%d mins</item>
+    </plurals>
+
+    <plurals name="interchanges">
+        <item quantity="one">%d Interchange</item>
+        <item quantity="other">%d Interchanges</item>
+    </plurals>
 </resources>

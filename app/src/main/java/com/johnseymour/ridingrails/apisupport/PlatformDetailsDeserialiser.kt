@@ -7,6 +7,7 @@ import com.johnseymour.ridingrails.models.data.PlatformDetails
 import java.lang.reflect.Type
 import java.time.LocalDateTime
 import java.time.ZoneId
+import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
 internal object PlatformDetailsDeserialiser: JsonDeserializer<PlatformDetails>
@@ -39,15 +40,18 @@ internal object PlatformDetailsDeserialiser: JsonDeserializer<PlatformDetails>
 
     private val dateTimeStringFormatter by lazy {
         DateTimeFormatter.ISO_DATE_TIME.apply {
-            withZone(ZoneId.systemDefault())
+            withZone(ZoneId.of("UTC"))
         }
     }
 
+    private val systemZone by lazy { ZoneId.systemDefault() }
+
+    /**Converts a UTC time string to a LocalDateTime in the system's current timezone**/
     private fun timeStringToObject(time: String?): LocalDateTime?
     {
         return try
         {
-            LocalDateTime.parse(time, dateTimeStringFormatter)
+            ZonedDateTime.parse(time, dateTimeStringFormatter)?.withZoneSameInstant(systemZone)?.toLocalDateTime()
         }
         catch (e: NullPointerException)
         {

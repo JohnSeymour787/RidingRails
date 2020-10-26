@@ -12,8 +12,16 @@
         android:layout_height="wrap_content"
         android:text="@string/trip_options_title_label"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <ImageButton
+        android:id="@+id/favouriteTrip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        />
+        android:background="@color/design_default_color_background"
+        android:src="@drawable/activity_trip_options_icon_unfavourite"/>
 
     <TextView
         android:id="@+id/origin"
@@ -21,8 +29,7 @@
         android:layout_height="wrap_content"
         tools:text="Museum"
         app:layout_constraintTop_toBottomOf="@id/titleText"
-        app:layout_constraintStart_toStartOf="parent"
-        />
+        app:layout_constraintStart_toStartOf="parent"/>
 
     <TextView
         android:id="@+id/destination"
@@ -30,8 +37,7 @@
         android:layout_height="wrap_content"
         tools:text="Central"
         app:layout_constraintTop_toBottomOf="@id/titleText"
-        app:layout_constraintStart_toEndOf="@id/origin"
-        />
+        app:layout_constraintStart_toEndOf="@id/origin"/>
 
     <TextView
         android:id="@+id/time"
@@ -39,8 +45,7 @@
         android:layout_height="wrap_content"
         tools:text="10:50 am"
         app:layout_constraintTop_toBottomOf="@id/origin"
-        app:layout_constraintStart_toStartOf="@id/origin"
-        />
+        app:layout_constraintStart_toStartOf="@id/origin"/>
 
     <TextView
         android:id="@+id/date"
@@ -48,8 +53,7 @@
         android:layout_height="wrap_content"
         tools:text="23 October 2020"
         app:layout_constraintTop_toBottomOf="@id/destination"
-        app:layout_constraintStart_toEndOf="@id/time"
-        />
+        app:layout_constraintStart_toEndOf="@id/time"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/tripOptionsList"
@@ -59,7 +63,6 @@
         app:layout_constraintTop_toBottomOf="@id/date"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        />
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

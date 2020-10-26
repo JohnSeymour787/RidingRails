@@ -27,7 +27,7 @@ class TripSearchViewModel: ViewModel()
     private fun LocalDateTime.toAPITimeString(): String
     {
         //API always requires leading 0s in this string
-        return "${(hour-1+12)%24}".padStart(2, '0') +
+        return "$hour".padStart(2, '0') +
                "$minute".padStart(2, '0')
     }
 }

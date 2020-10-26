@@ -12,8 +12,7 @@
         tools:text="$2.15"
         app:layout_constraintTop_toTopOf="@id/numberOfInterchanges"
         app:layout_constraintBottom_toBottomOf="@id/numberOfInterchanges"
-        app:layout_constraintEnd_toEndOf="parent"
-        />
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <TextView
         android:id="@+id/departTime"
@@ -30,8 +29,7 @@
         android:layout_height="wrap_content"
         tools:text="3 mins"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <TextView
         android:id="@+id/platformName"
@@ -40,8 +38,7 @@
         tools:text="Central Station, Platform 16"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        />
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <TextView
         android:id="@+id/firstLine"
@@ -50,8 +47,7 @@
         tools:text="T4"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        />
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
     <TextView
         android:id="@+id/numberOfInterchanges"
@@ -59,16 +55,14 @@
         android:layout_height="wrap_content"
         tools:text="0 Interchanges"
         app:layout_constraintStart_toStartOf="@id/firstLine"
-        app:layout_constraintTop_toBottomOf="@id/firstLine"
-        />
+        app:layout_constraintTop_toBottomOf="@id/firstLine"/>
 
     <ImageView
-        android:layout_width="20dp"
-        android:layout_height="wrap_content"
-        android:src="@mipmap/ic_launcher_round"
+        android:layout_width="@dimen/list_cell_trip_option_icon_dimens"
+        android:layout_height="@dimen/list_cell_trip_option_icon_dimens"
+        android:src="@drawable/list_trip_options_details_arrow"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        />
+        app:layout_constraintTop_toBottomOf="@id/timeFromNow"
+        app:layout_constraintBottom_toTopOf="@id/tripPrice"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

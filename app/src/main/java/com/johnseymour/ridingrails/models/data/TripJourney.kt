@@ -20,13 +20,13 @@ data class TripJourney(
     val startTime: String                   //V Time1 for the origin station is departureEstimated
         get() = legs.firstOrNull()?.origin?.time1?.format(Constants.Formatters.timeFormatter) ?: ""
 
-    val timeFromNow: String
+    val timeFromNow: Int?
         get()
         {
             legs.firstOrNull()?.origin?.time1?.let {
                 //Need to create the .now() instead, even in onBind() for accurate times
-                return LocalDateTime.now().until(it, ChronoUnit.MINUTES).toString()
+                return LocalDateTime.now().until(it, ChronoUnit.MINUTES).toInt()
             }
-            return ""
+            return null
         }
 }
