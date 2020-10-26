@@ -19,10 +19,11 @@ class TripOptionListAdapter(private val trips: List<TripJourney>): RecyclerView.
             itemView.apply {
                 tripPrice.text = resources.getString(R.string.trip_options_cell_price, tripJourney.price)
                 departTime.text = tripJourney.startTime
-                timeFromNow.text = tripJourney.timeFromNow
+                timeFromNow.text = tripJourney.timeFromNow?.let { resources.getQuantityString(R.plurals.minutes_from_now, it, it) }
                 platformName.text = tripJourney.originPlatformName
                 firstLine.text = tripJourney.firstLine
-                numberOfInterchanges.text = tripJourney.interchanges.toString()
+                //Only show number of interchanges if there actually are any
+                numberOfInterchanges.text = if (tripJourney.interchanges > 0) { resources.getQuantityString(R.plurals.interchanges, tripJourney.interchanges, tripJourney.interchanges) } else {""}
             }
         }
 
