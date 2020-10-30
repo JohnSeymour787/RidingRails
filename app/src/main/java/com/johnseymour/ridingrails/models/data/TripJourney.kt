@@ -10,9 +10,10 @@ data class TripJourney(
     val price: Float
 )
 {
-    //Computed properties for data binding a TripJourney in a RecyclerView list cell
+    /**Computed properties for data binding a TripJourney in a RecyclerView list cell**/
+
     val originPlatformName: String
-        get() = legs.firstOrNull()?.origin?.name ?: ""
+        get() = legs.firstOrNull()?.origin?.name?.split(", ")?.lastOrNull() ?: ""
 
     val firstLine: String
         get() = legs.firstOrNull()?.lineName ?: ""
@@ -20,6 +21,8 @@ data class TripJourney(
     val startTime: String                   //V Time1 for the origin station is departureEstimated
         get() = legs.firstOrNull()?.origin?.time1?.format(Constants.Formatters.timeFormatter) ?: ""
 
+    //Returns null because don't want any number to be returned if cannot find this data.
+    //Any number, including 0 or negatives, is a valid value.
     val timeFromNow: Int?
         get()
         {
