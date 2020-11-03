@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import com.johnseymour.ridingrails.apisupport.NetworkRepository
 import com.johnseymour.ridingrails.apisupport.models.StatusData
 import com.johnseymour.ridingrails.models.data.StopDetails
+import com.johnseymour.ridingrails.models.data.Trip
 import com.johnseymour.ridingrails.models.data.TripJourney
 
 class TripOptionsViewModel: ViewModel()
@@ -17,6 +18,8 @@ class TripOptionsViewModel: ViewModel()
     lateinit var initialStopLive: LiveData<StatusData<StopDetails>>
     lateinit var finalDestinationLive: LiveData<StatusData<StopDetails>>
     lateinit var journeyOptionsLive: LiveData<StatusData<List<TripJourney>>>
+
+    var trip: Trip = Trip()
 
     //Used to prevent multiple network calls for same data when activity has configuration change
     private var requestMade = false
