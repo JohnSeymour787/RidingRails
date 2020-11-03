@@ -49,9 +49,9 @@ object NetworkRepository
         }.build()
 
         val retrofit = Retrofit.Builder().baseUrl(API_BASE_URL)
-        .addConverterFactory(gsonConverter)
-        .client(httpClient)
-        .build()
+            .addConverterFactory(gsonConverter)
+            .client(httpClient)
+            .build()
 
         retrofit.create(NSWTripPlannerAPI::class.java)
     }
@@ -75,9 +75,13 @@ object NetworkRepository
             {
                 override fun onResponse(call: Call<Array<TripJourney>>, response: Response<Array<TripJourney>>)
                 {
-                    val trip = response.body()?.toList() ?: return
-                    //Post a successful status-wrapped data
-                    plannedTripsLiveData.postValue(StatusData.success(trip))
+                    response.body()?.toList()?.let { body ->
+                        //Post a successful status-wrapped data
+                        plannedTripsLiveData.postValue(StatusData.success(body))
+                        //TODO() add more specific Status enums to allow for error message localisation, see
+                        // onResponse() method below
+                    } ?: plannedTripsLiveData.postValue(StatusData.failure("Response body not found"))
+
                 }
 
                 override fun onFailure(call: Call<Array<TripJourney>>, t: Throwable)
@@ -130,14 +134,16 @@ object NetworkRepository
 
                     //Resolve the promise for this deferred
                     deferred.resolve(it)
-                }
+                    //TODO() Add more specific Status enums for different error types,
+                    // and allow for the observing activity to get a localised string resource depending on this error
+                } ?: liveData.postValue(StatusData.failure("Response body not found"))
             }
 
             //Failure error needs to be handled elsewhere
             override fun onFailure(call: Call<StopDetails>, t: Throwable)
             {
                 deferred.reject(t)
-                liveData.postValue(StatusData.failure(t.message))
+                liveData.postValue(StatusData.failure(t.localizedMessage))
             }
         })
 
