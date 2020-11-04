@@ -53,6 +53,7 @@
         app:layout_constraintEnd_toEndOf="parent"/>
 
     <Button
+        android:id="@+id/planTripButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/main_button_plan_trip"
@@ -60,4 +61,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/timeInput"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/favouriteTripsList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constrainedHeight="true"
+        app:layout_constraintTop_toBottomOf="@id/planTripButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
 </androidx.constraintlayout.widget.ConstraintLayout>
