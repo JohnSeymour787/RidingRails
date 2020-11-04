@@ -4,7 +4,9 @@ import android.content.Context
 import android.content.Intent
 import androidx.lifecycle.ViewModel
 import com.johnseymour.ridingrails.Constants
+import com.johnseymour.ridingrails.DiskRepository
 import com.johnseymour.ridingrails.TripOptionsActivity
+import com.johnseymour.ridingrails.models.data.Trip
 import java.time.LocalDateTime
 
 class TripSearchViewModel: ViewModel()

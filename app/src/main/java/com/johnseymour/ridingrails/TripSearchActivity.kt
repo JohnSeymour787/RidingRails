@@ -9,6 +9,8 @@ import android.widget.TimePicker
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.johnseymour.ridingrails.models.FavouriteTripsListAdapter
 import com.johnseymour.ridingrails.models.TripSearchViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.FileNotFoundException
@@ -36,6 +38,7 @@ class TripSearchActivity : AppCompatActivity()
         dateInput.text = viewModel.dateString
         timeInput.text = viewModel.timeString
 
+        favouriteTripsList.layoutManager = LinearLayoutManager(this)
     }
 
     override fun onResume()
@@ -46,6 +49,7 @@ class TripSearchActivity : AppCompatActivity()
         try
         {
             val myFavs = DiskRepository.readFavouriteTrips(openFileInput(DiskRepository.FAVOURITE_TRIPS_FILENAME)?.bufferedReader())
+            favouriteTripsList.adapter = FavouriteTripsListAdapter(myFavs)
         }
         catch (e: FileNotFoundException) {}
     }
