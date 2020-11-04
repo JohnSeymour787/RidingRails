@@ -30,6 +30,12 @@ class TripSearchViewModel: ViewModel()
             Constants.Formatters.APIDateFormatter), plannedTime.toAPITimeString())
     }
 
+    fun planFavouriteTripIntent(context: Context, trip: Trip): Intent
+    {
+        return TripOptionsActivity.planTripIntent(context, trip, plannedTime.format(
+            Constants.Formatters.APIDateFormatter), plannedTime.toAPITimeString())
+    }
+
     fun readFavourites(reader: BufferedReader?)
     {
         if (storageRead) {return}

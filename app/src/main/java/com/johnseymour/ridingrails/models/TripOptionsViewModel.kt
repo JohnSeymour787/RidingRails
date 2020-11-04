@@ -26,6 +26,17 @@ class TripOptionsViewModel: ViewModel()
     //Used to prevent multiple network calls for same data when activity has configuration change
     private var requestMade = false
 
+    fun startTripPlan(trip: Trip, dateString: String, timeString: String)
+    {
+        if (requestMade) {return}
+        NetworkRepository.planTrip(trip, dateString, timeString).let {
+            initialStopLive = it.initialStopLive
+            finalDestinationLive = it.finalDestinationLive
+            journeyOptionsLive = it.journeyOptionsLive
+        }
+        requestMade = true
+    }
+
     fun startTripPlan(origin: String, destination: String, dateString: String, timeString: String)
     {
         if (requestMade) {return}
