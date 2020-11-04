@@ -5,7 +5,6 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.johnseymour.ridingrails.apisupport.models.Status
@@ -83,6 +82,8 @@ class TripOptionsActivity : AppCompatActivity()
             {
                 viewModel.favouriteTrip(openFileOutput(DiskRepository.FAVOURITE_TRIPS_FILENAME, MODE_APPEND).bufferedWriter())
                 favouriteTrip.setImageResource(R.drawable.activity_trip_options_icon_favourite)
+                //Return the new favourited trip to add to the list of favourites without reading the file again
+                setResult(RESULT_OK, Intent().putExtra(FAVOURITE_TRIP_KEY, viewModel.trip))
             }
         }
     }
@@ -98,6 +99,7 @@ class TripOptionsActivity : AppCompatActivity()
 
     companion object
     {
+        const val FAVOURITE_TRIP_KEY = "favourite_trip_key"
         private const val ORIGIN_KEY = "origin_key"
         private const val DESTINATION_KEY = "destination_key"
         private const val DATE_KEY = "date_key"

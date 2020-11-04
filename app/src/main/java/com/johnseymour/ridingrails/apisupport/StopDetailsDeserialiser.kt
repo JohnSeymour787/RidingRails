@@ -3,7 +3,6 @@ package com.johnseymour.ridingrails.apisupport
 import com.google.gson.*
 import com.johnseymour.ridingrails.models.data.StopDetails
 import com.johnseymour.ridingrails.models.data.TravelMode
-import java.lang.NullPointerException
 import java.lang.reflect.Type
 
 

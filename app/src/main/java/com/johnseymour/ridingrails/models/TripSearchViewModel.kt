@@ -4,7 +4,10 @@ import android.content.Context
 import android.content.Intent
 import androidx.lifecycle.ViewModel
 import com.johnseymour.ridingrails.Constants
+import com.johnseymour.ridingrails.DiskRepository
 import com.johnseymour.ridingrails.TripOptionsActivity
+import com.johnseymour.ridingrails.models.data.Trip
+import java.io.BufferedReader
 import java.time.LocalDateTime
 
 class TripSearchViewModel: ViewModel()
@@ -17,10 +20,21 @@ class TripSearchViewModel: ViewModel()
     val timeString: String
         get() = plannedTime.format(Constants.Formatters.timeFormatter)
 
+    var favouriteTrips = mutableListOf<Trip>()
+
+    private var storageRead = false
+
     fun planTripIntent(context: Context): Intent
     {
         return TripOptionsActivity.planTripIntent(context, origin, destination, plannedTime.format(
             Constants.Formatters.APIDateFormatter), plannedTime.toAPITimeString())
+    }
+
+    fun readFavourites(reader: BufferedReader?)
+    {
+        if (storageRead) {return}
+        favouriteTrips = DiskRepository.readFavouriteTrips(reader).toMutableList()
+        storageRead = true
     }
 
     /**Extension method to get time string in a format that the API accepts**/
