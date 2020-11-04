@@ -21,7 +21,7 @@ enum class TravelMode(val modeID: Int)
     companion object
     {
         //Calling values() creates a new array each time, so cache this
-        private val values = values()
+        private val values by lazy { values() }
         /** Returns the corresponding TravelMode for the modeID passed. Returns null if no match **/
         fun valueOf(modeID: Int) = values.firstOrNull { it.modeID == modeID }
     }
