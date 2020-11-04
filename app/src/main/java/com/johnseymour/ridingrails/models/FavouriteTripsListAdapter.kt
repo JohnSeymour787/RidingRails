@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.johnseymour.ridingrails.models.data.Trip
 import kotlinx.android.synthetic.main.list_cell_favourite_trips.view.*
 
-class FavouriteTripsListAdapter(private val favouriteList: List<Trip>): RecyclerView.Adapter<FavouriteTripsListAdapter.FavouriteTripsViewHolder>()
+class FavouriteTripsListAdapter(private val favouriteList: List<Trip>, private val cellClick: (Trip) -> Unit): RecyclerView.Adapter<FavouriteTripsListAdapter.FavouriteTripsViewHolder>()
 {
     inner class FavouriteTripsViewHolder(view: FavouriteTripViewCell): RecyclerView.ViewHolder(view)
     {
@@ -15,6 +15,8 @@ class FavouriteTripsListAdapter(private val favouriteList: List<Trip>): Recycler
             itemView.apply {
                 originStationName.text = trip.origin?.disassembledName
                 destinationStationName.text = trip.destination?.disassembledName
+
+                setOnClickListener{cellClick(trip)}
             }
         }
     }

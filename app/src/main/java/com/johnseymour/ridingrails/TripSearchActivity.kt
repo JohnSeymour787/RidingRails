@@ -49,7 +49,7 @@ class TripSearchActivity : AppCompatActivity()
         }
         catch (e: FileNotFoundException) {}
         favouriteTripsList.layoutManager = LinearLayoutManager(this)
-        favouriteTripsList.adapter = FavouriteTripsListAdapter(viewModel.favouriteTrips)
+        favouriteTripsList.adapter = FavouriteTripsListAdapter(viewModel.favouriteTrips, ::favouriteCellClicked)
     }
 
     //If a Trip was favourited on the previous activity, it will be returned here to be updated in the list
@@ -62,7 +62,7 @@ class TripSearchActivity : AppCompatActivity()
         if (requestCode == TRIP_OPTIONS_REQUEST)
         {
             //Add the newly-favourited Trip and notify the list's adapter
-            viewModel.favouriteTrips.add(data?.getParcelableExtra<Trip>(TripOptionsActivity.FAVOURITE_TRIP_KEY) ?: return)
+            viewModel.favouriteTrips.add(data?.getParcelableExtra<Trip>(TripOptionsActivity.TRIP_KEY) ?: return)
             favouriteTripsList.adapter?.notifyItemInserted(viewModel.favouriteTrips.size)
         }
     }
@@ -88,6 +88,7 @@ class TripSearchActivity : AppCompatActivity()
                             ).show()
         }
     }
+
     /**onClick listener for the timeInput TextView**/
     fun showTimePickerDialogue(v: View)
     {
@@ -119,6 +120,14 @@ class TripSearchActivity : AppCompatActivity()
         }
 
         timeInput.text = viewModel.timeString
+    }
+
+    /**Called when a favourite Trip is tapped. Begins a trip plan using this origin and destination station, starting now.**/
+    private fun favouriteCellClicked(trip: Trip)
+    {
+        //If a favourite trip is selected, then don't want to add it again if the 2nd activity returns
+        //Thus, don't expect a result.
+        startActivity(viewModel.planFavouriteTripIntent(this, trip))
     }
 }
 

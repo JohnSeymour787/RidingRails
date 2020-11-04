@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.johnseymour.ridingrails.apisupport.models.Status
 import com.johnseymour.ridingrails.models.TripOptionListAdapter
 import com.johnseymour.ridingrails.models.TripOptionsViewModel
+import com.johnseymour.ridingrails.models.data.Trip
 import kotlinx.android.synthetic.main.activity_trip_options.*
 
 class TripOptionsActivity : AppCompatActivity()
@@ -27,12 +28,25 @@ class TripOptionsActivity : AppCompatActivity()
 
         //Deparcelise the API call parameters and make the ViewModel begin the call.
         //Won't need these strings beyond this point
-        val originString = intent.getStringExtra(ORIGIN_KEY) ?: ""
-        val destinationString = intent.getStringExtra(DESTINATION_KEY) ?: ""
+        //Date and time strings always exist
         val dateString = intent.getStringExtra(DATE_KEY) ?: ""
         val timeString = intent.getStringExtra(TIME_KEY) ?: ""
 
-        viewModel.startTripPlan(originString, destinationString, dateString, timeString)
+        //If this intent is from selecting a favourite trip, then make an API using this data
+        intent.getParcelableExtra<Trip>(TRIP_KEY)?.let {
+            viewModel.startTripPlan(it, dateString, timeString)
+            //This trip should be a favourite, so change the icon
+            if (viewModel.trip.favourite)
+            {
+                favouriteTrip.setImageResource(R.drawable.activity_trip_options_icon_favourite)
+            }
+        }
+        ?:  //Otherwise, try to get the origin and destination strings to make the API call
+        run {
+            val originString = intent.getStringExtra(ORIGIN_KEY) ?: ""
+            val destinationString = intent.getStringExtra(DESTINATION_KEY) ?: ""
+            viewModel.startTripPlan(originString, destinationString, dateString, timeString)
+        }
 
         //Observe the API call's response for the initial stop data
         viewModel.initialStopLive.observe(this) {
@@ -83,7 +97,7 @@ class TripOptionsActivity : AppCompatActivity()
                 viewModel.favouriteTrip(openFileOutput(DiskRepository.FAVOURITE_TRIPS_FILENAME, MODE_APPEND).bufferedWriter())
                 favouriteTrip.setImageResource(R.drawable.activity_trip_options_icon_favourite)
                 //Return the new favourited trip to add to the list of favourites without reading the file again
-                setResult(RESULT_OK, Intent().putExtra(FAVOURITE_TRIP_KEY, viewModel.trip))
+                setResult(RESULT_OK, Intent().putExtra(TRIP_KEY, viewModel.trip))
             }
         }
     }
@@ -99,18 +113,28 @@ class TripOptionsActivity : AppCompatActivity()
 
     companion object
     {
-        const val FAVOURITE_TRIP_KEY = "favourite_trip_key"
+        const val TRIP_KEY = "trip_key"
         private const val ORIGIN_KEY = "origin_key"
         private const val DESTINATION_KEY = "destination_key"
         private const val DATE_KEY = "date_key"
         private const val TIME_KEY = "time_key"
 
-        /**Return an Intent to this activity will all necessary string parameters to make a TripPlan API call.**/
+        /**Return an Intent to this activity with all necessary string parameters to make a TripPlan API call.**/
         fun planTripIntent(context: Context, origin: String, destination: String, dateString: String, timeString: String): Intent
         {
             return Intent(context, TripOptionsActivity::class.java).apply {
                 putExtra(ORIGIN_KEY, origin)
                 putExtra(DESTINATION_KEY, destination)
+                putExtra(DATE_KEY, dateString)
+                putExtra(TIME_KEY, timeString)
+            }
+        }
+
+        /**Allows for Trip planning using a favourite trip**/
+        fun planTripIntent(context: Context, trip: Trip, dateString: String, timeString: String): Intent
+        {
+            return Intent(context, TripOptionsActivity::class.java).apply {
+                putExtra(TRIP_KEY, trip)
                 putExtra(DATE_KEY, dateString)
                 putExtra(TIME_KEY, timeString)
             }
