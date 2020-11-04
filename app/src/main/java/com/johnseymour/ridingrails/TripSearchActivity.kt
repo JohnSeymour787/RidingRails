@@ -2,6 +2,7 @@ package com.johnseymour.ridingrails
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.DatePicker
@@ -12,9 +13,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.johnseymour.ridingrails.models.FavouriteTripsListAdapter
 import com.johnseymour.ridingrails.models.TripSearchViewModel
+import com.johnseymour.ridingrails.models.data.Trip
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.FileNotFoundException
 import java.time.LocalDateTime
+
+private const val TRIP_OPTIONS_REQUEST = 0
 
 class TripSearchActivity : AppCompatActivity()
 {
@@ -38,29 +42,37 @@ class TripSearchActivity : AppCompatActivity()
         dateInput.text = viewModel.dateString
         timeInput.text = viewModel.timeString
 
-        favouriteTripsList.layoutManager = LinearLayoutManager(this)
-    }
-
-    override fun onResume()
-    {
-        super.onResume()
-
-        //In case file doesn't exist
         try
         {
-            val myFavs = DiskRepository.readFavouriteTrips(openFileInput(DiskRepository.FAVOURITE_TRIPS_FILENAME)?.bufferedReader())
-            favouriteTripsList.adapter = FavouriteTripsListAdapter(myFavs)
+            //Read from storage once, for this ViewModel's life
+            viewModel.readFavourites(openFileInput(DiskRepository.FAVOURITE_TRIPS_FILENAME)?.bufferedReader())
         }
         catch (e: FileNotFoundException) {}
+        favouriteTripsList.layoutManager = LinearLayoutManager(this)
+        favouriteTripsList.adapter = FavouriteTripsListAdapter(viewModel.favouriteTrips)
+    }
+
+    //If a Trip was favourited on the previous activity, it will be returned here to be updated in the list
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?)
+    {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (resultCode != RESULT_OK) {return}
+
+        if (requestCode == TRIP_OPTIONS_REQUEST)
+        {
+            //Add the newly-favourited Trip and notify the list's adapter
+            viewModel.favouriteTrips.add(data?.getParcelableExtra<Trip>(TripOptionsActivity.FAVOURITE_TRIP_KEY) ?: return)
+            favouriteTripsList.adapter?.notifyItemInserted(viewModel.favouriteTrips.size)
+        }
     }
 
     fun planNewTrip(v: View)
     {
         //ViewModel uses its properties to create an intent with the user parameters
         //to allow the 2nd activity to make the API calls.
-        startActivity(viewModel.planTripIntent(this))
+        startActivityForResult(viewModel.planTripIntent(this), TRIP_OPTIONS_REQUEST)
     }
-
 
     /**onClick listener for the dateInput TextView**/
     fun showDatePickerDialogue(v: View)
@@ -81,12 +93,7 @@ class TripSearchActivity : AppCompatActivity()
     {
         viewModel.plannedTime.let {
             TimePickerDialog(
-                this,
-                R.style.TripPlanningDialogs,
-                ::onTimeSet,
-                it.hour,
-                it.minute,
-                false
+                this, R.style.TripPlanningDialogs, ::onTimeSet, it.hour, it.minute, false
                             ).show()
         }
     }
@@ -115,13 +122,5 @@ class TripSearchActivity : AppCompatActivity()
     }
 }
 
-private fun LocalDateTime.updatedDate(year: Int, month: Int, day: Int): LocalDateTime = withYear(
-    year
-                                                                                                ).withMonth(
-    month
-                                                                                                           ).withDayOfMonth(
-    day
-                                                                                                                           )
-private fun LocalDateTime.updatedTime(hour: Int, minute: Int): LocalDateTime = withHour(hour).withMinute(
-    minute
-                                                                                                        )
+private fun LocalDateTime.updatedDate(year: Int, month: Int, day: Int): LocalDateTime = withYear(year).withMonth(month).withDayOfMonth(day)
+private fun LocalDateTime.updatedTime(hour: Int, minute: Int): LocalDateTime = withHour(hour).withMinute(minute)
