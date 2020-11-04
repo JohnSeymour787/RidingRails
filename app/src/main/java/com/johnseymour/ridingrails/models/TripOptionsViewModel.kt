@@ -2,11 +2,13 @@ package com.johnseymour.ridingrails.models
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import com.johnseymour.ridingrails.DiskRepository
 import com.johnseymour.ridingrails.apisupport.NetworkRepository
 import com.johnseymour.ridingrails.apisupport.models.StatusData
 import com.johnseymour.ridingrails.models.data.StopDetails
 import com.johnseymour.ridingrails.models.data.Trip
 import com.johnseymour.ridingrails.models.data.TripJourney
+import java.io.BufferedWriter
 
 class TripOptionsViewModel: ViewModel()
 {
@@ -33,5 +35,11 @@ class TripOptionsViewModel: ViewModel()
             journeyOptionsLive = it.journeyOptionsLive
         }
         requestMade = true
+    }
+
+    fun favouriteTrip(writer: BufferedWriter)
+    {
+        trip.favourite = true       //Unfavouriting not currently supported
+        DiskRepository.addFavouriteTrip(trip, writer)
     }
 }

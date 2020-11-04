@@ -2,15 +2,16 @@ package com.johnseymour.ridingrails
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.DatePicker
 import android.widget.TimePicker
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.ViewModelProvider
 import com.johnseymour.ridingrails.models.TripSearchViewModel
 import kotlinx.android.synthetic.main.activity_main.*
+import java.io.FileNotFoundException
 import java.time.LocalDateTime
 
 class TripSearchActivity : AppCompatActivity()
@@ -34,6 +35,19 @@ class TripSearchActivity : AppCompatActivity()
 
         dateInput.text = viewModel.dateString
         timeInput.text = viewModel.timeString
+
+    }
+
+    override fun onResume()
+    {
+        super.onResume()
+
+        //In case file doesn't exist
+        try
+        {
+            val myFavs = DiskRepository.readFavouriteTrips(openFileInput(DiskRepository.FAVOURITE_TRIPS_FILENAME)?.bufferedReader())
+        }
+        catch (e: FileNotFoundException) {}
     }
 
     fun planNewTrip(v: View)
@@ -47,15 +61,29 @@ class TripSearchActivity : AppCompatActivity()
     /**onClick listener for the dateInput TextView**/
     fun showDatePickerDialogue(v: View)
     {
-        viewModel.plannedTime.let {                                                                         //V DatePickerDialogue uses 0 as the starting index for months
-            DatePickerDialog(this, R.style.TripPlanningDialogs, ::onDateSet, it.year, it.monthValue - 1, it.dayOfMonth).show()
+        viewModel.plannedTime.let {
+            DatePickerDialog(
+                this,
+                R.style.TripPlanningDialogs,
+                ::onDateSet,
+                it.year,    //V DatePickerDialogue uses 0 as the starting index for months
+                it.monthValue - 1,
+                it.dayOfMonth
+                            ).show()
         }
     }
     /**onClick listener for the timeInput TextView**/
     fun showTimePickerDialogue(v: View)
     {
         viewModel.plannedTime.let {
-            TimePickerDialog(this, R.style.TripPlanningDialogs, ::onTimeSet, it.hour, it.minute, false).show()
+            TimePickerDialog(
+                this,
+                R.style.TripPlanningDialogs,
+                ::onTimeSet,
+                it.hour,
+                it.minute,
+                false
+                            ).show()
         }
     }
 
@@ -83,5 +111,13 @@ class TripSearchActivity : AppCompatActivity()
     }
 }
 
-private fun LocalDateTime.updatedDate(year: Int, month: Int, day: Int): LocalDateTime = withYear(year).withMonth(month).withDayOfMonth(day)
-private fun LocalDateTime.updatedTime(hour: Int, minute: Int): LocalDateTime = withHour(hour).withMinute(minute)
+private fun LocalDateTime.updatedDate(year: Int, month: Int, day: Int): LocalDateTime = withYear(
+    year
+                                                                                                ).withMonth(
+    month
+                                                                                                           ).withDayOfMonth(
+    day
+                                                                                                                           )
+private fun LocalDateTime.updatedTime(hour: Int, minute: Int): LocalDateTime = withHour(hour).withMinute(
+    minute
+                                                                                                        )
