@@ -29,6 +29,9 @@ class TripOptionsViewModel: ViewModel()
     fun startTripPlan(trip: Trip, dateString: String, timeString: String)
     {
         if (requestMade) {return}
+
+        this.trip = trip
+
         NetworkRepository.planTrip(trip, dateString, timeString).let {
             initialStopLive = it.initialStopLive
             finalDestinationLive = it.finalDestinationLive

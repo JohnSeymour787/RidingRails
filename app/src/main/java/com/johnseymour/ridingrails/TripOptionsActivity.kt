@@ -32,9 +32,16 @@ class TripOptionsActivity : AppCompatActivity()
         val dateString = intent.getStringExtra(DATE_KEY) ?: ""
         val timeString = intent.getStringExtra(TIME_KEY) ?: ""
 
+        //If this intent is from selecting a favourite trip, then make an API using this data
         intent.getParcelableExtra<Trip>(TRIP_KEY)?.let {
             viewModel.startTripPlan(it, dateString, timeString)
-        } ?:
+            //This trip should be a favourite, so change the icon
+            if (viewModel.trip.favourite)
+            {
+                favouriteTrip.setImageResource(R.drawable.activity_trip_options_icon_favourite)
+            }
+        }
+        ?:  //Otherwise, try to get the origin and destination strings to make the API call
         run {
             val originString = intent.getStringExtra(ORIGIN_KEY) ?: ""
             val destinationString = intent.getStringExtra(DESTINATION_KEY) ?: ""
