@@ -2,8 +2,10 @@ package com.johnseymour.ridingrails
 
 import android.content.Context
 import android.content.Intent
+import android.opengl.Visibility
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -12,6 +14,7 @@ import com.johnseymour.ridingrails.models.TripOptionListAdapter
 import com.johnseymour.ridingrails.models.TripOptionsViewModel
 import com.johnseymour.ridingrails.models.data.Trip
 import kotlinx.android.synthetic.main.activity_trip_options.*
+import kotlinx.android.synthetic.main.activity_trip_options.view.*
 
 class TripOptionsActivity : AppCompatActivity()
 {
@@ -56,6 +59,7 @@ class TripOptionsActivity : AppCompatActivity()
                 origin.text = it.data?.disassembledName
                 //Update ViewModel's Trip origin field
                 viewModel.trip.origin = it?.data
+                incrementProgress()
             }
             else
             {
@@ -69,6 +73,7 @@ class TripOptionsActivity : AppCompatActivity()
             {
                 destination.text = it?.data?.disassembledName
                 viewModel.trip.destination = it?.data
+                incrementProgress()
             }
             else
             {
@@ -82,6 +87,7 @@ class TripOptionsActivity : AppCompatActivity()
             {
                 time.text = it?.data?.size.toString()
                 tripOptionsList.adapter = TripOptionListAdapter(it?.data ?: listOf())
+                incrementProgress()
             }
             else
             {
@@ -98,6 +104,19 @@ class TripOptionsActivity : AppCompatActivity()
                 favouriteTrip.setImageResource(R.drawable.activity_trip_options_icon_favourite)
                 //Return the new favourited trip to add to the list of favourites without reading the file again
                 setResult(RESULT_OK, Intent().putExtra(TRIP_KEY, viewModel.trip))
+            }
+        }
+    }
+
+    /**Increments the progressBar.progress until it reaches the max, then hides it**/
+    private fun incrementProgress()
+    {
+        progressBar.run {
+            progress++
+
+            if (progress == max)
+            {
+                visibility = View.GONE
             }
         }
     }

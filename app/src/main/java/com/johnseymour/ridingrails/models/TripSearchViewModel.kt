@@ -12,8 +12,8 @@ import java.time.LocalDateTime
 
 class TripSearchViewModel: ViewModel()
 {
-    var origin = "central"          //TODO() Change back to empty string
-    var destination = "museum"      //TODO() Change back to empty string
+    var origin = ""
+    var destination = ""
     var plannedTime: LocalDateTime = LocalDateTime.now()
     val dateString: String
         get() = plannedTime.format(Constants.Formatters.dateFormatter)
