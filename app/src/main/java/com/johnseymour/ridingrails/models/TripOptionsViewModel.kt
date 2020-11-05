@@ -15,7 +15,7 @@ class TripOptionsViewModel: ViewModel()
     /*As there are multiple LiveData's to observe, and any one of which can fail,
     * only want to make sure that one error message is shown to the user.
     **/
-    var networkErrorOccurred = false
+    var errorOccurred = false
 
     lateinit var initialStopLive: LiveData<StatusData<StopDetails>>
     lateinit var finalDestinationLive: LiveData<StatusData<StopDetails>>

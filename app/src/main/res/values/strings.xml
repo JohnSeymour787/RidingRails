@@ -1,9 +1,10 @@
 <resources>
     <string name="app_name">Riding Rails</string>
-    <string name="main_button_plan_trip">Plan Trip</string>
+    <string name="main_button_plan_trip">Plan My Trip</string>
     <string name="trip_options_cell_price">$%1$.2f</string>
     <string name="trip_options_title_label">Trip Options For:</string>
     <string name="trip_options_no_response_body">Response body not found</string>
+    <string name="trip_options_no_connection">Could not connect to the internet, please check your device settings.</string>
 
     <plurals name="minutes_from_now">
         <item quantity="one">%d min</item>

@@ -2,7 +2,6 @@ package com.johnseymour.ridingrails
 
 import android.content.Context
 import android.content.Intent
-import android.opengl.Visibility
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -14,7 +13,6 @@ import com.johnseymour.ridingrails.models.TripOptionListAdapter
 import com.johnseymour.ridingrails.models.TripOptionsViewModel
 import com.johnseymour.ridingrails.models.data.Trip
 import kotlinx.android.synthetic.main.activity_trip_options.*
-import kotlinx.android.synthetic.main.activity_trip_options.view.*
 
 class TripOptionsActivity : AppCompatActivity()
 {
@@ -53,45 +51,52 @@ class TripOptionsActivity : AppCompatActivity()
 
         //Observe the API call's response for the initial stop data
         viewModel.initialStopLive.observe(this) {
-            if (it.status == Status.SUCCESS)
+            when (it.status)
             {
-                //Update UI
-                origin.text = it.data?.disassembledName
-                //Update ViewModel's Trip origin field
-                viewModel.trip.origin = it?.data
-                incrementProgress()
-            }
-            else
-            {
-                showNetworkError(it.message)
+                Status.Success ->
+                {
+                    //Update UI
+                    origin.text = it.data?.disassembledName
+                    //Update ViewModel's Trip origin field
+                    viewModel.trip.origin = it?.data
+                    incrementProgress()
+                }
+
+                Status.NetworkError -> showError(getString(R.string.trip_options_no_connection))
+                Status.UnknownError -> showError(it.message)
             }
         }
 
         //Observe the API call's response for the final destination stop data
         viewModel.finalDestinationLive.observe(this) {
-            if (it.status == Status.SUCCESS)
+            when (it.status)
             {
-                destination.text = it?.data?.disassembledName
-                viewModel.trip.destination = it?.data
-                incrementProgress()
-            }
-            else
-            {
-                showNetworkError(it.message)
+                Status.Success ->
+                {
+                    //Update UI
+                    destination.text = it.data?.disassembledName
+                    //Update ViewModel's Trip origin field
+                    viewModel.trip.destination = it?.data
+                    incrementProgress()
+                }
+
+                Status.NetworkError -> showError(getString(R.string.trip_options_no_connection))
+                Status.UnknownError -> showError(it.message)
             }
         }
 
         //Observe the API call's response for the full list of journey options
         viewModel.journeyOptionsLive.observe(this) {
-            if (it.status == Status.SUCCESS)
+            when (it.status)
             {
-                time.text = it?.data?.size.toString()
-                tripOptionsList.adapter = TripOptionListAdapter(it?.data ?: listOf())
-                incrementProgress()
-            }
-            else
-            {
-                showNetworkError(it.message)
+                Status.Success ->
+                {
+                    tripOptionsList.adapter = TripOptionListAdapter(it?.data ?: listOf())
+                    incrementProgress()
+                }
+
+                Status.NetworkError -> showError(getString(R.string.trip_options_no_connection))
+                Status.UnknownError -> showError(it.message)
             }
         }
 
@@ -121,12 +126,12 @@ class TripOptionsActivity : AppCompatActivity()
         }
     }
 
-    private fun showNetworkError(errorMessage: String?)
+    private fun showError(errorMessage: String?)
     {
-        if (!viewModel.networkErrorOccurred)
+        if (!viewModel.errorOccurred)
         {
             Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show()
-            viewModel.networkErrorOccurred = true
+            viewModel.errorOccurred = true
         }
     }
 

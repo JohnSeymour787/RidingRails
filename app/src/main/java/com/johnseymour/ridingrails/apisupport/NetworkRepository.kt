@@ -13,6 +13,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.io.IOException
 import java.util.Locale
 
 
@@ -69,14 +70,21 @@ object NetworkRepository
                     //Post a successful status-wrapped data
                     liveData.postValue(StatusData.success(body))
                     //TODO() add more specific Status enums to allow for error message localisation, see
-                    // onResponse() method below
-                } ?: liveData.postValue(StatusData.failure("Trip Planner response body not found"))
+                    // onResponse() method below. This error generally shouldn't occur anyway.
+                } ?: liveData.postValue(StatusData.generalFailure("Trip Planner response body not found"))
             }
 
             override fun onFailure(call: Call<Array<TripJourney>>, t: Throwable)
             {
-                //Post a failed status-wrapped data
-                liveData.postValue(StatusData.failure(t.localizedMessage))
+                if (t is IOException)
+                {
+                    liveData.postValue(StatusData.networkError())
+                }
+                else
+                {
+                    //Post a failed status-wrapped data
+                    liveData.postValue(StatusData.generalFailure(t.localizedMessage))
+                }
             }
         })
     }
@@ -109,8 +117,8 @@ object NetworkRepository
         }
         ?:  //If no origin station, then need to post errors here and to the plannedTrips LiveData, at it cannot now work
         run {
-            originLiveData.postValue (StatusData.failure("Could not find origin station details!"))
-            plannedTripsLiveData.postValue(StatusData.failure("Could not find origin station details!"))
+            originLiveData.postValue(StatusData.generalFailure("Could not find origin station details!"))
+            plannedTripsLiveData.postValue(StatusData.generalFailure("Could not find origin station details!"))
         }
 
         trip.destination?.let {
@@ -118,8 +126,8 @@ object NetworkRepository
         }
         ?:  //If no destination station, then need to post errors here and to the plannedTrips LiveData, at it cannot work
         run {
-            destinationLiveData.postValue(StatusData.failure("Could not find destination station details!"))
-            plannedTripsLiveData.postValue(StatusData.failure("Could not find destination station details!"))
+            destinationLiveData.postValue(StatusData.generalFailure("Could not find destination station details!"))
+            plannedTripsLiveData.postValue(StatusData.generalFailure("Could not find destination station details!"))
         }
 
         //Will only make the trip plan API call if the origin and destination details are non-null
@@ -174,16 +182,25 @@ object NetworkRepository
 
                     //Resolve the promise for this deferred
                     deferred.resolve(it)
-                    //TODO() Add more specific Status enums for different error types,
-                    // and allow for the observing activity to get a localised string resource depending on this error
-                } ?: liveData.postValue(StatusData.failure("Couldn't find \"$stopString\" station. Please try another search"))
+                    //TODO() Add "Stop not found error" Status enum and allow for the observing activity to get a localised string resource
+                } ?: liveData.postValue(StatusData.generalFailure("Couldn't find \"$stopString\" station. Please try another search"))
             }
 
             //Failure error needs to be handled elsewhere
             override fun onFailure(call: Call<StopDetails>, t: Throwable)
             {
+                //If a network error occurred (part of IOException)
+                if (t is IOException)
+                {
+                    //Post a network error. Error text will be sent elsewhere
+                    liveData.postValue(StatusData.networkError())
+                }
+                //Otherwise, post the localised general failure
+                else
+                {
+                    liveData.postValue(StatusData.generalFailure(t.localizedMessage))
+                }
                 deferred.reject(t)
-                liveData.postValue(StatusData.failure(t.localizedMessage))
             }
         })
 
