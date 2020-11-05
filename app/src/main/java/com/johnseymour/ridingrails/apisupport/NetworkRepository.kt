@@ -70,13 +70,13 @@ object NetworkRepository
                     liveData.postValue(StatusData.success(body))
                     //TODO() add more specific Status enums to allow for error message localisation, see
                     // onResponse() method below
-                } ?: liveData.postValue(StatusData.failure("Response body not found"))
+                } ?: liveData.postValue(StatusData.failure("Trip Planner response body not found"))
             }
 
             override fun onFailure(call: Call<Array<TripJourney>>, t: Throwable)
             {
                 //Post a failed status-wrapped data
-                liveData.postValue(StatusData.failure(t.message))
+                liveData.postValue(StatusData.failure(t.localizedMessage))
             }
         })
     }
@@ -176,7 +176,7 @@ object NetworkRepository
                     deferred.resolve(it)
                     //TODO() Add more specific Status enums for different error types,
                     // and allow for the observing activity to get a localised string resource depending on this error
-                } ?: liveData.postValue(StatusData.failure("Response body not found"))
+                } ?: liveData.postValue(StatusData.failure("Couldn't find \"$stopString\" station. Please try another search"))
             }
 
             //Failure error needs to be handled elsewhere

@@ -28,7 +28,7 @@ internal object StopDetailsDeserialiser: JsonDeserializer<StopDetails>
     {
         with (stopTopLevel)
         {
-            val id = getAsJsonPrimitive("id").asInt
+            val id = getAsJsonPrimitive("id")?.asInt ?: return null
             val name = getAsJsonPrimitive("name").asString ?: ""
             val disassembledName = getAsJsonPrimitive("disassembledName").asString ?: ""
 
