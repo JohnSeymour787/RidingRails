@@ -151,6 +151,7 @@ object NetworkRepository
 
         //If the cache has the stop in it, use this and immediately return
         searchStopDetailCache(searchTerm)?.let {
+            liveData.postValue(StatusData.success(it))
             deferred.resolve(it)
             return deferred.promise
         }
