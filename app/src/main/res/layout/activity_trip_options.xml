@@ -40,27 +40,20 @@
         app:layout_constraintStart_toEndOf="@id/origin"/>
 
     <TextView
-        android:id="@+id/time"
+        android:id="@+id/errorDisplay"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="10:50 am"
-        app:layout_constraintTop_toBottomOf="@id/origin"
-        app:layout_constraintStart_toStartOf="@id/origin"/>
-
-    <TextView
-        android:id="@+id/date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:text="23 October 2020"
-        app:layout_constraintTop_toBottomOf="@id/destination"
-        app:layout_constraintStart_toEndOf="@id/time"/>
+        android:visibility="gone"
+        tools:text="Error"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/tripOptionsList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constrainedHeight="true"
-        app:layout_constraintTop_toBottomOf="@id/date"
+        app:layout_constraintTop_toBottomOf="@id/destination"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>

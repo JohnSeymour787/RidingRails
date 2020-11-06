@@ -8,7 +8,8 @@ data class StatusData<T>(val status: Status, val data: T?, val message: String?)
 {
     companion object
     {
-        fun <T> success(data: T): StatusData<T> = StatusData(Status.SUCCESS, data, null)
-        fun <T> failure(message: String?): StatusData<T> = StatusData(Status.ERROR, null, message)
+        fun <T> success(data: T): StatusData<T> = StatusData(Status.Success, data, null)
+        fun <T> generalFailure(message: String?): StatusData<T> = StatusData(Status.UnknownError, null, message)
+        fun <T> networkError(): StatusData<T> = StatusData(Status.NetworkError, null, null)
     }
 }

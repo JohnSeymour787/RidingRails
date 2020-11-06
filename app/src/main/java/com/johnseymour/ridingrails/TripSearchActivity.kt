@@ -69,9 +69,12 @@ class TripSearchActivity : AppCompatActivity()
 
     fun planNewTrip(v: View)
     {
-        //ViewModel uses its properties to create an intent with the user parameters
-        //to allow the 2nd activity to make the API calls.
-        startActivityForResult(viewModel.planTripIntent(this), TRIP_OPTIONS_REQUEST)
+        if (validateFields())
+        {
+            //ViewModel uses its properties to create an intent with the user parameters
+            //to allow the 2nd activity to make the API calls.
+            startActivityForResult(viewModel.planTripIntent(this), TRIP_OPTIONS_REQUEST)
+        }
     }
 
     /**onClick listener for the dateInput TextView**/
@@ -128,6 +131,28 @@ class TripSearchActivity : AppCompatActivity()
         //If a favourite trip is selected, then don't want to add it again if the 2nd activity returns
         //Thus, don't expect a result.
         startActivity(viewModel.planFavouriteTripIntent(this, trip))
+    }
+
+    private fun validateFields(): Boolean
+    {
+        val originString = originInput.text.toString()
+        val destinationString = destinationInput.text.toString()
+
+        var result = true
+
+        if (originString.isEmpty())
+        {
+            originInput.error = "Field cannot be blank"
+            result = false
+        }
+
+        if (destinationString.isEmpty())
+        {
+            destinationInput.error = "Field cannot be blank"
+            result = false
+        }
+
+        return result
     }
 }
 
