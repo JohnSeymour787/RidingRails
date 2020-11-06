@@ -6,44 +6,65 @@
     android:layout_height="match_parent"
     tools:context=".TripOptionsActivity">
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constrainedHeight="true"
+        android:background="@color/colorAccent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/tripOptionsList"/>
+
     <TextView
         android:id="@+id/titleText"
+        android:visibility="visible"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/trip_options_title_label"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        android:textSize="@dimen/text_font_size_normal"
+        android:text="@string/trip_options_text_to"
+        app:layout_constraintStart_toStartOf="@id/origin"
+        app:layout_constraintTop_toTopOf="@id/favouriteTrip"
+        app:layout_constraintBottom_toBottomOf="@id/favouriteTrip"
+        app:layout_constraintEnd_toEndOf="@id/origin"/>
 
     <ImageButton
         android:id="@+id/favouriteTrip"
-        android:layout_width="wrap_content"
+        android:layout_width="48dp"
         android:layout_height="wrap_content"
+        android:contentDescription="@string/trip_options_favourite_icon_description"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:background="@color/design_default_color_background"
+        app:layout_constraintTop_toBottomOf="@id/origin"
+        android:backgroundTint="@color/colorAccent"
         android:src="@drawable/activity_trip_options_icon_unfavourite"/>
 
     <TextView
         android:id="@+id/origin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textSize="@dimen/text_font_size_title"
         tools:text="Museum"
-        app:layout_constraintTop_toBottomOf="@id/titleText"
-        app:layout_constraintStart_toStartOf="parent"/>
+        android:layout_marginTop="@dimen/list_cell_trip_option_horizontal_margin"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <TextView
         android:id="@+id/destination"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textSize="@dimen/text_font_size_title"
         tools:text="Central"
-        app:layout_constraintTop_toBottomOf="@id/titleText"
-        app:layout_constraintStart_toEndOf="@id/origin"/>
+        app:layout_constraintTop_toBottomOf="@id/favouriteTrip"
+        app:layout_constraintStart_toStartOf="@id/origin"
+        app:layout_constraintEnd_toEndOf="@id/origin"
+        app:layout_constraintBottom_toTopOf="@id/tripOptionsList"/>
 
     <TextView
         android:id="@+id/errorDisplay"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
+        android:textSize="@dimen/text_font_size_normal"
+        android:layout_margin="@dimen/list_cell_trip_option_horizontal_margin"
         tools:text="Error"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -52,6 +73,8 @@
         android:id="@+id/tripOptionsList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginHorizontal="@dimen/list_cell_trip_option_horizontal_margin"
+        android:layout_marginTop="@dimen/list_cell_trip_option_horizontal_margin"
         app:layout_constrainedHeight="true"
         app:layout_constraintTop_toBottomOf="@id/destination"
         app:layout_constraintStart_toStartOf="parent"

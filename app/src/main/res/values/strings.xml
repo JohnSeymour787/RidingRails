@@ -6,10 +6,12 @@
     <string name="trip_options_no_response_body">Response body not found</string>
     <string name="trip_options_no_connection">Could not connect to the internet, please check your device settings.</string>
     <string name="trip_options_cell_arrow_icon_description">Arrow icon indicating this cell can be clicked</string>
+    <string name="trip_options_favourite_icon_description">Star icon to favourite this trip</string>
+    <string name="trip_options_text_to">to</string>
 
     <plurals name="minutes_from_now">
-        <item quantity="one">%d\n min</item>
-        <item quantity="other">%d\n mins</item>
+        <item quantity="one">%d min</item>
+        <item quantity="other">%d mins</item>
     </plurals>
 
     <plurals name="interchanges">

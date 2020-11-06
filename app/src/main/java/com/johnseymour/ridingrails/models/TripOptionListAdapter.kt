@@ -23,7 +23,7 @@ class TripOptionListAdapter(private val trips: List<TripJourney>): RecyclerView.
                 timeFromNow.text = tripJourney.timeFromNow?.let { resources.getQuantityString(R.plurals.minutes_from_now, it, it) }
                 platformName.text = tripJourney.originPlatformName
                 firstLine.text = tripJourney.firstLine
-                tripJourney.firstLineColor?.let {firstLine.setTextColor(resources.getColor(it, null))}
+                tripJourney.firstLineColor?.let {firstLine.background.setTint(resources.getColor(it, null))}
                 //Only show number of interchanges if there actually are any
                 numberOfInterchanges.text = if (tripJourney.interchanges > 0) { resources.getQuantityString(R.plurals.interchanges, tripJourney.interchanges, tripJourney.interchanges) } else {""}
             }
@@ -38,7 +38,7 @@ class TripOptionListAdapter(private val trips: List<TripJourney>): RecyclerView.
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TripOptionViewHolder
     {
         val tripOptionCell = TripOptionViewCell(parent.context).apply {
-            layoutParams = ConstraintLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            layoutParams = ConstraintLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, resources.getDimensionPixelSize(R.dimen.list_cell_trip_option_height))
             background = ContextCompat.getDrawable(context, R.drawable.trip_options_cell_background)
         }
 
