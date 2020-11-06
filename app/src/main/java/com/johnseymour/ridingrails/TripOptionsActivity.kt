@@ -126,13 +126,16 @@ class TripOptionsActivity : AppCompatActivity()
         }
     }
 
+    /**Displays the error in a text field on the screen and hides all other UI elements**/
     private fun showError(errorMessage: String?)
     {
-        if (!viewModel.errorOccurred)
-        {
-            Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show()
-            viewModel.errorOccurred = true
-        }
+        errorDisplay.text = errorMessage
+        errorDisplay.visibility = View.VISIBLE
+        favouriteTrip.visibility = View.GONE
+        titleText.visibility = View.GONE
+        progressBar.visibility = View.GONE
+        origin.visibility = View.GONE
+        destination.visibility = View.GONE
     }
 
     companion object
