@@ -65,7 +65,7 @@
         android:textColor="@color/colorWhiteText"
         android:layout_margin="@dimen/grid_box_margin"
         app:layout_constraintTop_toBottomOf="@id/destinationLayout"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="@id/destinationLayout"/>
 
     <TextView
         android:id="@+id/dateInput"
@@ -77,7 +77,7 @@
         android:textColor="@color/colorWhiteText"
         android:layout_margin="@dimen/grid_box_margin"
         app:layout_constraintTop_toBottomOf="@id/destinationLayout"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="@id/destinationLayout"/>
 
     <Button
         android:id="@+id/planTripButton"
@@ -85,6 +85,7 @@
         android:layout_height="wrap_content"
         android:text="@string/main_button_plan_trip"
         android:onClick="planNewTrip"
+        android:textStyle="bold"
         android:layout_marginTop="@dimen/grid_box_margin"
         android:layout_margin="@dimen/grid_box_margin"
         app:layout_constraintStart_toStartOf="parent"
