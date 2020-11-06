@@ -1,4 +1,4 @@
-package com.johnseymour.ridingrails.models
+package com.johnseymour.ridingrails
 
 import android.graphics.Rect
 import android.view.View

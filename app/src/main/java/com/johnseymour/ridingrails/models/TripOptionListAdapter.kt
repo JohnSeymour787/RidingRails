@@ -3,6 +3,7 @@ package com.johnseymour.ridingrails.models
 import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.johnseymour.ridingrails.R
 import com.johnseymour.ridingrails.TripOptionViewCell
@@ -38,6 +39,7 @@ class TripOptionListAdapter(private val trips: List<TripJourney>): RecyclerView.
     {
         val tripOptionCell = TripOptionViewCell(parent.context).apply {
             layoutParams = ConstraintLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            background = ContextCompat.getDrawable(context, R.drawable.trip_options_cell_background)
         }
 
         return TripOptionViewHolder(tripOptionCell)
