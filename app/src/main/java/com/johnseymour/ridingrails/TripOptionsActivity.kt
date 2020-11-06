@@ -5,7 +5,6 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.johnseymour.ridingrails.apisupport.models.Status
@@ -26,6 +25,8 @@ class TripOptionsActivity : AppCompatActivity()
         setContentView(R.layout.activity_trip_options)
 
         tripOptionsList.layoutManager = LinearLayoutManager(this)
+        tripOptionsList.addItemDecoration(TripOptionsVerticalSpaceDecoration(resources.getDimensionPixelOffset(R.dimen.list_cell_trip_option_spacing)))
+
 
         //Deparcelise the API call parameters and make the ViewModel begin the call.
         //Won't need these strings beyond this point

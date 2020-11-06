@@ -2,23 +2,40 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginBottom="20dp"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <TextView
-        android:id="@+id/originStationName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <ImageView
+        android:id="@+id/journeyIcon"
+        android:layout_width="@dimen/list_cell_favourite_trip_icon_dimens"
+        android:layout_height="@dimen/list_cell_favourite_trip_icon_dimens"
+        android:src="@drawable/journey_icon"
+        android:contentDescription="@string/activity_main_list_cell_favourites_icon_journey_description"
+        android:layout_marginTop="@dimen/grid_box_margin"
+        android:layout_marginStart="@dimen/grid_box_margin"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/destinationStationName"
-        tools:text="Sydney Central"/>
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
-        android:id="@+id/destinationStationName"
+        android:id="@+id/favouriteTripDescription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toEndOf="@id/originStationName"
+        android:textSize="@dimen/text_font_size_normal"
+        android:layout_margin="@dimen/grid_box_margin"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintStart_toEndOf="@id/journeyIcon"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:text="Museum"/>
+        app:layout_constraintEnd_toStartOf="@id/clickCellIcon"
+        tools:text="Journey from Sydney Central to Museum"/>
+    
+    <ImageView
+        android:id="@+id/clickCellIcon"
+        android:layout_width="@dimen/list_cell_trip_option_icon_dimens"
+        android:layout_height="@dimen/list_cell_trip_option_icon_dimens"
+        android:src="@drawable/list_trip_options_details_arrow"
+        android:contentDescription="@string/activity_main_list_cell_favourites_icon_tap_me_description"
+        android:layout_marginEnd="@dimen/grid_box_margin"
+        app:layout_constraintTop_toTopOf="@id/journeyIcon"
+        app:layout_constraintEnd_toEndOf="parent"/>
 </merge>

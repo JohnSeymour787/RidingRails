@@ -18,6 +18,9 @@ data class TripJourney(
     val firstLine: String
         get() = legs.firstOrNull()?.lineName ?: ""
 
+    val firstLineColor: Int?
+        get() = legs.firstOrNull()?.lineColor
+
     val startTime: String                   //V Time1 for the origin station is departureEstimated
         get() = legs.firstOrNull()?.origin?.time1?.format(Constants.Formatters.timeFormatter) ?: ""
 

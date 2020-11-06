@@ -10,6 +10,7 @@ import android.widget.TimePicker
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.johnseymour.ridingrails.models.FavouriteTripsListAdapter
 import com.johnseymour.ridingrails.models.TripSearchViewModel
@@ -49,6 +50,7 @@ class TripSearchActivity : AppCompatActivity()
         }
         catch (e: FileNotFoundException) {}
         favouriteTripsList.layoutManager = LinearLayoutManager(this)
+        favouriteTripsList.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
         favouriteTripsList.adapter = FavouriteTripsListAdapter(viewModel.favouriteTrips, ::favouriteCellClicked)
     }
 

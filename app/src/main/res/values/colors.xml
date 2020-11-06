@@ -1,6 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#6200EE</color>
-    <color name="colorPrimaryDark">#3700B3</color>
-    <color name="colorAccent">#03DAC5</color>
+    <color name="colorPrimary">#C62034</color>
+    <color name="colorPrimaryFaded">#D9C62034</color>
+    <color name="colorPrimaryDark">#B71128</color>
+    <color name="colorAccent">#F99D1C</color>
+    <color name="colorTripOptionCell">#E1DFDF</color>
+    <color name="colorWhiteText">#FFFFFF</color>
+
+    <color name="T1">#F99D1C</color>
+    <color name="T2">#0098CD </color>
+    <color name="T3">#DF4825 </color>
+    <color name="T4">#005AA3 </color>
+    <color name="T5">#C4258F</color>
+    <color name="T6">#456CAA </color>
+    <color name="T7">#6F818E </color>
+    <color name="T8">#00954C </color>
+    <color name="T9">#D11F2E</color>
+    <color name="M">#168388 </color>
 </resources>

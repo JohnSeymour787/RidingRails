@@ -1,5 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="list_cell_trip_option_icon_dimens">20dp</dimen>
+    <dimen name="list_cell_favourite_trip_icon_dimens">40dp</dimen>
+    <dimen name="list_cell_trip_option_height">88dp</dimen>
+    <dimen name="grid_box_margin">8dp</dimen>
+    <dimen name="list_cell_trip_option_corner_roundness">7dp</dimen>
+    <dimen name="list_cell_trip_option_line_background_radius">35dp</dimen>
+    <dimen name="list_cell_trip_option_spacing">24dp</dimen>
     <dimen name="activity_trip_options_progress_bar_width">200dp</dimen>
+    <dimen name="text_font_size_minor">16sp</dimen>
+    <dimen name="text_font_size_normal">18sp</dimen>
+    <dimen name="text_font_size_major">20sp</dimen>
+    <dimen name="text_font_size_title">28sp</dimen>
 </resources>
