@@ -22,6 +22,7 @@ class TripOptionListAdapter(private val trips: List<TripJourney>): RecyclerView.
                 timeFromNow.text = tripJourney.timeFromNow?.let { resources.getQuantityString(R.plurals.minutes_from_now, it, it) }
                 platformName.text = tripJourney.originPlatformName
                 firstLine.text = tripJourney.firstLine
+                tripJourney.firstLineColor?.let {firstLine.setTextColor(resources.getColor(it, null))}
                 //Only show number of interchanges if there actually are any
                 numberOfInterchanges.text = if (tripJourney.interchanges > 0) { resources.getQuantityString(R.plurals.interchanges, tripJourney.interchanges, tripJourney.interchanges) } else {""}
             }

@@ -6,10 +6,13 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.cardview.widget.CardView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.johnseymour.ridingrails.apisupport.models.Status
 import com.johnseymour.ridingrails.models.TripOptionListAdapter
+import com.johnseymour.ridingrails.models.TripOptionsVerticalSpaceDecoration
 import com.johnseymour.ridingrails.models.TripOptionsViewModel
 import com.johnseymour.ridingrails.models.data.Trip
 import kotlinx.android.synthetic.main.activity_trip_options.*
@@ -26,6 +29,8 @@ class TripOptionsActivity : AppCompatActivity()
         setContentView(R.layout.activity_trip_options)
 
         tripOptionsList.layoutManager = LinearLayoutManager(this)
+        tripOptionsList.addItemDecoration(TripOptionsVerticalSpaceDecoration(resources.getDimensionPixelOffset(R.dimen.list_cell_trip_option_spacing)))
+
 
         //Deparcelise the API call parameters and make the ViewModel begin the call.
         //Won't need these strings beyond this point
