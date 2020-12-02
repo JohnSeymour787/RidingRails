@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginBottom="20dp"
@@ -18,7 +18,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/favouriteTripDescription"
+        android:id="@+id/stopName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="@dimen/text_font_size_normal"
@@ -38,4 +38,4 @@
         android:layout_marginEnd="@dimen/grid_box_margin"
         app:layout_constraintTop_toTopOf="@id/journeyIcon"
         app:layout_constraintEnd_toEndOf="parent"/>
-</merge>
+</androidx.constraintlayout.widget.ConstraintLayout>

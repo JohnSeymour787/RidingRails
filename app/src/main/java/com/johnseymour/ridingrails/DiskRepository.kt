@@ -12,7 +12,7 @@ object DiskRepository
 
     private val gson by lazy {
         GsonBuilder()
-            .registerTypeAdapter(StopDetails::class.java, StopDetailsDeserialiser)
+            .registerTypeAdapter(Array<StopDetails>::class.java, StopDetailsDeserialiser)
             .create()
     }
 

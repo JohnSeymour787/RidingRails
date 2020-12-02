@@ -9,6 +9,7 @@ import android.widget.DatePicker
 import android.widget.TimePicker
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doOnTextChanged
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -31,9 +32,22 @@ class TripSearchActivity : AppCompatActivity()
     {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        originInput.doOnTextChanged { text, _, _, _ ->
+           // stopSearchFrame.
+        /*
+        originInput.doOnTextChanged { text, _, _, count ->
             viewModel.origin = text.toString()
+            if (count > 2)
+            {
+                StopSearchFragment()
+             //   stopSearchFrame.visibility = View.VISIBLE
+                supportFragmentManager.beginTransaction().add(R.id.stopSearchFrame, StopSearchFragment.newInstance()).commit()
+                //viewModel.getStopDetails(text.toString())
+            }
+        }*/
+
+        originInput.setOnClickListener {
+            stopSearchFrame.visibility = View.VISIBLE
+            supportFragmentManager.beginTransaction().add(R.id.stopSearchFrame, StopSearchFragment.newInstance()).commit()
         }
 
         destinationInput.doOnTextChanged { text, _, _, _ ->

@@ -2,10 +2,14 @@ package com.johnseymour.ridingrails.models
 
 import android.content.Context
 import android.content.Intent
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.johnseymour.ridingrails.Constants
 import com.johnseymour.ridingrails.DiskRepository
 import com.johnseymour.ridingrails.TripOptionsActivity
+import com.johnseymour.ridingrails.apisupport.NetworkRepository
+import com.johnseymour.ridingrails.apisupport.models.StatusData
+import com.johnseymour.ridingrails.models.data.StopDetails
 import com.johnseymour.ridingrails.models.data.Trip
 import java.io.BufferedReader
 import java.time.LocalDateTime

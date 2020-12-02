@@ -9,12 +9,12 @@ import retrofit2.http.Query
 internal interface NSWTripPlannerAPI
 {
     @GET("stop_finder?outputFormat=rapidJSON" +
-         "&type_sf=stop" +
+         "&type_sf=any" +
          "&coordOutputFormat=EPSG%3A4326" +
          "&TfNSWSF=true" +
          "&version=10.2.1.42"
         )
-    fun getStopDetails(@Query("name_sf") name: String): Call<StopDetails>
+    fun getStopDetails(@Query("name_sf") name: String): Call<Array<StopDetails>>
 
     @GET(
         "trip?outputFormat=rapidJSON" +
