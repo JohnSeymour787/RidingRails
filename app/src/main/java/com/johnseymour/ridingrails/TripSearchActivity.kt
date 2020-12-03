@@ -93,7 +93,7 @@ class TripSearchActivity : AppCompatActivity()
            // favouriteTripsList.adapter?.notifyItemInserted(viewModel.favouriteTrips.size)
         }
     }
-
+/*
     fun planNewTrip(v: View)
     {
         if (validateFields())
@@ -103,6 +103,8 @@ class TripSearchActivity : AppCompatActivity()
             startActivityForResult(viewModel.planTripIntent(this), TRIP_OPTIONS_REQUEST)
         }
     }
+
+ */
 
     /**onClick listener for the dateInput TextView**/
     fun showDatePickerDialogue(v: View)

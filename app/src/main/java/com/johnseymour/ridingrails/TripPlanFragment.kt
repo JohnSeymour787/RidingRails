@@ -42,6 +42,16 @@ class TripPlanFragment : Fragment()
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this).get(TripPlanViewModel::class.java)
 
+        //Signal to the activity to add an origin fragment to its fragment container
+        originName.setOnClickListener {
+            parentFragmentManager.setFragmentResult(ORIGIN_SEARCH_REQUEST, bundleOf())
+        }
+
+        destinationName.setOnClickListener {
+            parentFragmentManager.setFragmentResult(DESTINATION_SEARCH_REQUEST, bundleOf())
+        }
+
+        //Listeners for when the StopSearchFragment returns either origin or destination data
         parentFragmentManager.apply {
             setFragmentResultListener(ORIGIN_SEARCH_KEY, viewLifecycleOwner) { _, bundle ->
                 viewModel.trip.origin = bundle.getParcelable(ORIGIN_SEARCH_KEY)
@@ -55,13 +65,10 @@ class TripPlanFragment : Fragment()
             }
         }
 
-        //Signal to the activity to add an origin fragment to its fragment container
-        originName.setOnClickListener {
-            parentFragmentManager.setFragmentResult(ORIGIN_SEARCH_REQUEST, bundleOf())
-        }
-
-        destinationName.setOnClickListener {
-            parentFragmentManager.setFragmentResult(DESTINATION_SEARCH_REQUEST, bundleOf())
+        planTripButton.setOnClickListener {
+            //ViewModel uses its properties to create an intent with the user parameters
+            //to allow the 2nd activity to make the API calls.
+            startActivityForResult(viewModel.planTripIntent(requireContext()), TRIP_OPTIONS_REQUEST)
         }
 
         dateInput.text = viewModel.dateString
