@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".TripPlanFragment">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorPrimaryFaded"
+        app:layout_constrainedHeight="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/planTripButton"/>
+
+    <TextView
+        android:id="@+id/originName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/text_font_size_normal"
+        android:hint="@string/activity_main_hint_origin"
+        android:textAlignment="center"
+        android:textColor="@color/colorWhiteText"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="Central"/>
+
+    <TextView
+        android:id="@+id/destinationName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/text_font_size_normal"
+        android:hint="@string/activity_main_hint_destination"
+        android:textAlignment="center"
+        android:textColor="@color/colorWhiteText"
+        app:layout_constraintTop_toBottomOf="@id/originName"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="Museum"/>
+
+    <TextView
+        android:id="@+id/timeInput"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="showTimePickerDialogue"
+        android:textSize="@dimen/text_font_size_normal"
+        tools:text="10:00 PM"
+        android:textColor="@color/colorWhiteText"
+        android:layout_margin="@dimen/grid_box_margin"
+        app:layout_constraintTop_toBottomOf="@id/destinationName"
+        app:layout_constraintStart_toStartOf="@id/destinationName"/>
+
+    <TextView
+        android:id="@+id/dateInput"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="showDatePickerDialogue"
+        android:textSize="@dimen/text_font_size_normal"
+        tools:text="Friday, November 6, 2020"
+        android:textColor="@color/colorWhiteText"
+        android:layout_margin="@dimen/grid_box_margin"
+        app:layout_constraintTop_toBottomOf="@id/destinationName"
+        app:layout_constraintEnd_toEndOf="@id/destinationName"/>
+
+    <Button
+        android:id="@+id/planTripButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/main_button_plan_trip"
+        android:onClick="planNewTrip"
+        android:textStyle="bold"
+        android:layout_marginTop="@dimen/grid_box_margin"
+        android:layout_margin="@dimen/grid_box_margin"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/timeInput"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/favouriteTripsList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constrainedHeight="true"
+        android:layout_marginTop="@dimen/grid_box_margin"
+        app:layout_constraintTop_toBottomOf="@id/planTripButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

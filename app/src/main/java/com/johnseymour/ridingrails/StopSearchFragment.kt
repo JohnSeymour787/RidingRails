@@ -9,15 +9,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import androidx.activity.addCallback
+import androidx.core.os.bundleOf
 import androidx.core.widget.doOnTextChanged
+import androidx.fragment.app.setFragmentResult
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.johnseymour.ridingrails.apisupport.models.Status
 import com.johnseymour.ridingrails.models.StopSearchListAdapter
 import com.johnseymour.ridingrails.models.StopSearchViewModel
+import com.johnseymour.ridingrails.models.data.StopDetails
 import kotlinx.android.synthetic.main.stop_search_fragment.*
 import java.util.*
 
-class StopSearchFragment : Fragment()
+class StopSearchFragment(var searchKey: String? = null) : Fragment()
 {
     private var delayTimer = Timer()
     private inner class APIDelayTask(val searchTerm: String): TimerTask()
@@ -32,27 +36,33 @@ class StopSearchFragment : Fragment()
     }
 
     private lateinit var viewModel: StopSearchViewModel
+    private val resultListAdapter = StopSearchListAdapter(listOf(), ::stopSelected)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
     {
         return inflater.inflate(R.layout.stop_search_fragment, container, false)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?)
     {
-        super.onActivityCreated(savedInstanceState)
+        super.onViewCreated(view, savedInstanceState)
+
         viewModel = ViewModelProvider(this).get(StopSearchViewModel::class.java)
 
+        //TODO()
+        activity?.onBackPressedDispatcher?.addCallback(this) {
+
+        }
+
         //Make the keyboard appear with the search input in focus
-        searchInput.requestFocus()
+         searchInput.requestFocus()
         (activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)?.showSoftInput(searchInput, InputMethodManager.SHOW_IMPLICIT)
 
         searchInput.setOnEditorActionListener { _, actionID, _ ->
             //If the search button is pressed, clear the focus and hide the keyboard
             if (actionID == EditorInfo.IME_ACTION_SEARCH)
             {
-                searchInput.clearFocus()
-                (activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)?.hideSoftInputFromWindow(searchInput.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
+                lowerKeyboard()
                 return@setOnEditorActionListener true
             }
             return@setOnEditorActionListener false
@@ -71,14 +81,33 @@ class StopSearchFragment : Fragment()
             }
             else
             {
-                //Clear the list
-                stopDetailsList.adapter = StopSearchListAdapter(listOf())
+                //Clear the adapter's list
+                resultListAdapter.stops = listOf()
             }
         }
-
+        stopDetailsList.adapter = resultListAdapter
         stopDetailsList.layoutManager = LinearLayoutManager(context)
     }
 
+    private fun lowerKeyboard()
+    {
+        searchInput.clearFocus()
+        (activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)?.hideSoftInputFromWindow(searchInput.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
+    }
+
+    override fun onPause()
+    {
+        super.onPause()
+        lowerKeyboard()
+        resultListAdapter.stops = listOf()
+        searchInput.text?.clear()
+    }
+
+    private fun stopSelected(stop: StopDetails)
+    {
+        val key = searchKey ?: ORIGIN_SEARCH_KEY
+        setFragmentResult(key, bundleOf(key to stop))
+    }
 
     private fun setDataObserver()
     {
@@ -88,17 +117,19 @@ class StopSearchFragment : Fragment()
             {
                 Status.Success ->
                 {
-                    it.data?.firstOrNull()?.disassembledName
-                    stopDetailsList.adapter = StopSearchListAdapter(it?.data ?: listOf())
+                    resultListAdapter.apply {
+                        stops = it?.data ?: listOf()
+                        notifyDataSetChanged()
+                    }
                 }
             }
         }
     }
 
-    companion object
-    {
+companion object
+{
         private const val API_CALL_DELAY_MS = 100L
+        fun newInstance(searchKey: String) = StopSearchFragment(searchKey)
+}
 
-        fun newInstance() = StopSearchFragment()
-    }
 }

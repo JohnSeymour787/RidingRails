@@ -7,7 +7,7 @@ import com.johnseymour.ridingrails.StopSearchViewCell
 import com.johnseymour.ridingrails.models.data.StopDetails
 import kotlinx.android.synthetic.main.list_cell_stop_search.view.*
 
-class StopSearchListAdapter(private val stops: List<StopDetails>): RecyclerView.Adapter<StopSearchListAdapter.StopSearchViewHolder>()
+class StopSearchListAdapter(var stops: List<StopDetails>, private val onClick: ((StopDetails) -> Unit)): RecyclerView.Adapter<StopSearchListAdapter.StopSearchViewHolder>()
 {
     inner class StopSearchViewHolder(view: StopSearchViewCell): RecyclerView.ViewHolder(view)
     {
@@ -15,8 +15,9 @@ class StopSearchListAdapter(private val stops: List<StopDetails>): RecyclerView.
         {
             itemView.apply {
                 stopName.text = stop.disassembledName
-                //Probably some other data to show here, such as the modes (or an icon that changes
-                //based on mode type)
+                setOnClickListener{onClick(stop)}
+                //TODO() Probably some other data to show here, such as the modes (or an icon that changes
+                // based on mode type)
             }
         }
     }

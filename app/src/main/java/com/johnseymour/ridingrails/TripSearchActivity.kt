@@ -8,19 +8,15 @@ import android.view.View
 import android.widget.DatePicker
 import android.widget.TimePicker
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.widget.doOnTextChanged
-import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentResultListener
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.johnseymour.ridingrails.models.FavouriteTripsListAdapter
 import com.johnseymour.ridingrails.models.TripSearchViewModel
 import com.johnseymour.ridingrails.models.data.Trip
-import kotlinx.android.synthetic.main.activity_main.*
-import java.io.FileNotFoundException
 import java.time.LocalDateTime
 
 private const val TRIP_OPTIONS_REQUEST = 0
+const val ORIGIN_SEARCH_KEY = "origin"
+const val DESTINATION_SEARCH_KEY = "destination"
 
 class TripSearchActivity : AppCompatActivity()
 {
@@ -28,26 +24,38 @@ class TripSearchActivity : AppCompatActivity()
         ViewModelProvider(this).get(TripSearchViewModel::class.java)
     }
 
+    private var stopSearchFragment = StopSearchFragment()
+
+    private fun addStopSearchFragment()
+    {
+        supportFragmentManager.beginTransaction().add(R.id.fragmentContainer, stopSearchFragment).addToBackStack(null).commit()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?)
     {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-           // stopSearchFrame.
-        /*
-        originInput.doOnTextChanged { text, _, _, count ->
-            viewModel.origin = text.toString()
-            if (count > 2)
-            {
-                StopSearchFragment()
-             //   stopSearchFrame.visibility = View.VISIBLE
-                supportFragmentManager.beginTransaction().add(R.id.stopSearchFrame, StopSearchFragment.newInstance()).commit()
-                //viewModel.getStopDetails(text.toString())
-            }
-        }*/
 
+        supportFragmentManager.apply {
+            setFragmentResultListener(TripPlanFragment.ORIGIN_SEARCH_REQUEST, this@TripSearchActivity) { _, _ ->
+                stopSearchFragment.searchKey = ORIGIN_SEARCH_KEY
+                addStopSearchFragment()
+            }
+            setFragmentResultListener(TripPlanFragment.DESTINATION_SEARCH_REQUEST, this@TripSearchActivity) { _, _ ->
+                stopSearchFragment.searchKey = DESTINATION_SEARCH_KEY
+                addStopSearchFragment()
+            }
+        }
+/*
         originInput.setOnClickListener {
             stopSearchFrame.visibility = View.VISIBLE
-            supportFragmentManager.beginTransaction().add(R.id.stopSearchFrame, StopSearchFragment.newInstance()).commit()
+            StopSearchFragment.searchKey = ORIGIN_SEARCH_KEY
+            supportFragmentManager.beginTransaction().add(R.id.stopSearchFrame, StopSearchFragment).commit()
+        }
+        supportFragmentManager.setFragmentResultListener(ORIGIN_SEARCH_KEY, this) {_, bundle ->
+            viewModel.trip.origin = bundle.getParcelable(ORIGIN_SEARCH_KEY)
+            originInput.text = viewModel.trip.origin?.disassembledName ?: ""
+            supportFragmentManager.beginTransaction().remove(StopSearchFragment).commit()
         }
 
         destinationInput.doOnTextChanged { text, _, _, _ ->
@@ -66,6 +74,9 @@ class TripSearchActivity : AppCompatActivity()
         favouriteTripsList.layoutManager = LinearLayoutManager(this)
         favouriteTripsList.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
         favouriteTripsList.adapter = FavouriteTripsListAdapter(viewModel.favouriteTrips, ::favouriteCellClicked)
+
+
+ */
     }
 
     //If a Trip was favourited on the previous activity, it will be returned here to be updated in the list
@@ -79,7 +90,7 @@ class TripSearchActivity : AppCompatActivity()
         {
             //Add the newly-favourited Trip and notify the list's adapter
             viewModel.favouriteTrips.add(data?.getParcelableExtra<Trip>(TripOptionsActivity.TRIP_KEY) ?: return)
-            favouriteTripsList.adapter?.notifyItemInserted(viewModel.favouriteTrips.size)
+           // favouriteTripsList.adapter?.notifyItemInserted(viewModel.favouriteTrips.size)
         }
     }
 
@@ -127,7 +138,7 @@ class TripSearchActivity : AppCompatActivity()
             plannedTime = plannedTime.updatedDate(year, month + 1, day)
         }
 
-        dateInput.text = viewModel.dateString
+       // dateInput.text = viewModel.dateString
     }
 
     /**Updates time portion of the ViewModel's plannedTime property and updates the time text.
@@ -138,7 +149,7 @@ class TripSearchActivity : AppCompatActivity()
             plannedTime = plannedTime.updatedTime(hour, minute)
         }
 
-        timeInput.text = viewModel.timeString
+        //timeInput.text = viewModel.timeString
     }
 
     /**Called when a favourite Trip is tapped. Begins a trip plan using this origin and destination station, starting now.**/
@@ -151,20 +162,20 @@ class TripSearchActivity : AppCompatActivity()
 
     private fun validateFields(): Boolean
     {
-        val originString = originInput.text.toString()
-        val destinationString = destinationInput.text.toString()
+     //   val originString = originInput.text.toString()
+     //   val destinationString = destinationInput.text.toString()
 
         var result = true
 
-        if (originString.isEmpty())
+     //   if (originString.isEmpty())
         {
-            originInput.error = "Field cannot be blank"
+    //        originInput.error = "Field cannot be blank"
             result = false
         }
 
-        if (destinationString.isEmpty())
+    //    if (destinationString.isEmpty())
         {
-            destinationInput.error = "Field cannot be blank"
+    //        destinationInput.error = "Field cannot be blank"
             result = false
         }
 
