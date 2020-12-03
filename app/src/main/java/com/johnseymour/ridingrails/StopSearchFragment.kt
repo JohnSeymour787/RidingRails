@@ -12,13 +12,20 @@ import com.johnseymour.ridingrails.apisupport.models.Status
 import com.johnseymour.ridingrails.models.StopSearchListAdapter
 import com.johnseymour.ridingrails.models.StopSearchViewModel
 import kotlinx.android.synthetic.main.stop_search_fragment.*
+import java.util.*
 
 class StopSearchFragment : Fragment()
 {
-
-    companion object
+    private var delayTimer = Timer()
+    private inner class APIDelayTask(val searchTerm: String): TimerTask()
     {
-        fun newInstance() = StopSearchFragment()
+        override fun run()
+        {
+            viewModel.searchStops(searchTerm)
+            activity?.runOnUiThread {
+                setDataObserver()
+            }
+        }
     }
 
     private lateinit var viewModel: StopSearchViewModel
@@ -35,14 +42,21 @@ class StopSearchFragment : Fragment()
 
         stopDetailsList.layoutManager = LinearLayoutManager(context)
 
-        originInput.doOnTextChanged { text, _, _, _ ->
+        searchInput.doOnTextChanged { text, _, _, _ ->
+            //API usually doesn't return much for searches with less than 3 characters
             if (text?.length ?:0 > 2)
             {
-                viewModel.searchStops(text.toString())
-                setDataObserver()
+                //Remove cancelled tasks from the timer and make a new one
+                delayTimer.cancel()
+                delayTimer = Timer()
+                delayTimer.schedule(APIDelayTask(text.toString()), API_CALL_DELAY_MS)
+            }
+            else
+            {
+                //Clear the list
+                stopDetailsList.adapter = StopSearchListAdapter(listOf())
             }
         }
-
     }
 
 
@@ -58,5 +72,12 @@ class StopSearchFragment : Fragment()
                 }
             }
         }
+    }
+
+    companion object
+    {
+        private const val API_CALL_DELAY_MS = 100L
+
+        fun newInstance() = StopSearchFragment()
     }
 }

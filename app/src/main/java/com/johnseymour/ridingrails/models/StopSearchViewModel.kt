@@ -14,8 +14,6 @@ class StopSearchViewModel : ViewModel()
     fun searchStops(searchTerm: String)
     {
         searchString = searchTerm
-        //Todo () Might need a timer here to only start this network call after 300ms or so
-        // ^Or do this in the fragment code
         searchList = NetworkRepository.getSingleStopDetails(searchString)
     }
 }

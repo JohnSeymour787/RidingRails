@@ -8,7 +8,7 @@
     tools:context=".StopSearchFragment">
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/originLayout"
+        android:id="@+id/searchboxLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColorHint="@color/colorWhiteText"
@@ -18,7 +18,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/originInput"
+            android:id="@+id/searchInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="@dimen/text_font_size_normal"
@@ -33,7 +33,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constrainedHeight="true"
-        app:layout_constraintTop_toBottomOf="@id/originLayout"
+        app:layout_constraintTop_toBottomOf="@id/searchboxLayout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
