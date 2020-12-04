@@ -2,6 +2,7 @@ package com.johnseymour.ridingrails.models
 
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.johnseymour.ridingrails.StopSearchViewCell
 import com.johnseymour.ridingrails.models.data.StopDetails
@@ -15,9 +16,12 @@ class StopSearchListAdapter(var stops: List<StopDetails>, private val onClick: (
         {
             itemView.apply {
                 stopName.text = stop.disassembledName
+                //Attempt to get the suburb from the latter part of the name string
+                stop.name.split(", ").lastOrNull()?.let { stopSuburb.text = it }
                 setOnClickListener{onClick(stop)}
-                //TODO() Probably some other data to show here, such as the modes (or an icon that changes
-                // based on mode type)
+                //Update the modes list adapter's data
+                (availableModesList.adapter as? ModeListAdapter)?.modes = stop.travelModes
+                availableModesList.adapter?.notifyDataSetChanged()
             }
         }
     }
@@ -26,6 +30,8 @@ class StopSearchListAdapter(var stops: List<StopDetails>, private val onClick: (
     {
         val stopDetailsCell = StopSearchViewCell(parent.context).apply {
             layoutParams = ConstraintLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            availableModesList.layoutManager = LinearLayoutManager(parent.context)
+            availableModesList.adapter = ModeListAdapter()
         }
 
         return StopSearchViewHolder(stopDetailsCell)

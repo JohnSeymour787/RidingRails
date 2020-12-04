@@ -27,8 +27,42 @@
         app:layout_constraintStart_toEndOf="@id/journeyIcon"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toStartOf="@id/clickCellIcon"
-        tools:text="Journey from Sydney Central to Museum"/>
-    
+        tools:text="Central Station"/>
+
+    <TextView
+        android:id="@+id/stopSuburb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/text_font_size_minor"
+        android:layout_margin="@dimen/grid_box_margin"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintStart_toEndOf="@id/journeyIcon"
+        app:layout_constraintTop_toBottomOf="@id/stopName"
+        app:layout_constraintEnd_toStartOf="@id/clickCellIcon"
+        tools:text="Sydney"/>
+
+    <TextView
+        android:id="@+id/modesLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/text_font_size_minor"
+        android:layout_margin="@dimen/grid_box_margin"
+        android:text="@string/list_cell_stop_search_modes_label"
+        android:textAlignment="textStart"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintStart_toEndOf="@id/journeyIcon"
+        app:layout_constraintTop_toBottomOf="@id/stopSuburb"
+        app:layout_constraintEnd_toStartOf="@id/clickCellIcon"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/availableModesList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintStart_toStartOf="@id/modesLabel"
+        app:layout_constraintEnd_toEndOf="@id/modesLabel"
+        app:layout_constraintTop_toBottomOf="@id/modesLabel"/>
+
     <ImageView
         android:id="@+id/clickCellIcon"
         android:layout_width="@dimen/list_cell_trip_option_icon_dimens"
