@@ -6,6 +6,7 @@
     <color name="colorAccent">#F99D1C</color>
     <color name="colorTripOptionCell">#E1DFDF</color>
     <color name="colorWhiteText">#FFFFFF</color>
+    <color name="colorGreyText">#72FFFFFF</color>
 
     <color name="T1">#F99D1C</color>
     <color name="T2">#0098CD </color>
