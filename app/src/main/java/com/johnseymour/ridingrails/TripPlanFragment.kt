@@ -16,6 +16,7 @@ import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.johnseymour.ridingrails.models.FavouriteTripsListAdapter
+import com.johnseymour.ridingrails.models.data.StopDetails
 import com.johnseymour.ridingrails.models.data.Trip
 import kotlinx.android.synthetic.main.trip_plan_fragment.*
 import java.io.FileNotFoundException
@@ -52,14 +53,15 @@ class TripPlanFragment : Fragment()
         }
 
         //Listeners for when the StopSearchFragment returns either origin or destination data
+        //Update the ViewModel's Trip instance and show the name on the screen
         parentFragmentManager.apply {
             setFragmentResultListener(ORIGIN_SEARCH_KEY, viewLifecycleOwner) { _, bundle ->
-                viewModel.trip.origin = bundle.getParcelable(ORIGIN_SEARCH_KEY)
+                bundle.getParcelable<StopDetails>(ORIGIN_SEARCH_KEY)?.let {  viewModel.trip.origin = it }
                 originName.text = viewModel.trip.origin?.disassembledName
                 parentFragmentManager.popBackStack()
             }
             setFragmentResultListener(DESTINATION_SEARCH_KEY, viewLifecycleOwner) { _, bundle ->
-                viewModel.trip.destination = bundle.getParcelable(DESTINATION_SEARCH_KEY)
+                bundle.getParcelable<StopDetails>(DESTINATION_SEARCH_KEY)?.let { viewModel.trip.destination = it }
                 destinationName.text = viewModel.trip.destination?.disassembledName
                 parentFragmentManager.popBackStack()
             }

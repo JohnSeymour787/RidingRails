@@ -49,13 +49,15 @@ class StopSearchFragment(var searchKey: String? = null) : Fragment()
 
         viewModel = ViewModelProvider(this).get(StopSearchViewModel::class.java)
 
-        //TODO()
+        //Trigger the fragment listening for the search key, but don't have any data to pass back
+        //Should cause the parent fragment to remove this fragment as this is now returning
         activity?.onBackPressedDispatcher?.addCallback(this) {
-
+            val key = searchKey ?: ORIGIN_SEARCH_KEY
+            setFragmentResult(key, bundleOf())
         }
 
         //Make the keyboard appear with the search input in focus
-         searchInput.requestFocus()
+        searchInput.requestFocus()
         (activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)?.showSoftInput(searchInput, InputMethodManager.SHOW_IMPLICIT)
 
         searchInput.setOnEditorActionListener { _, actionID, _ ->
