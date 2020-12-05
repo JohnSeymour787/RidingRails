@@ -41,7 +41,7 @@ class TripPlanFragment : Fragment()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?)
     {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProvider(this).get(TripPlanViewModel::class.java)
+        viewModel = ViewModelProvider(requireActivity()).get(TripPlanViewModel::class.java)
 
         //Signal to the activity to add an origin fragment to its fragment container
         originName.setOnClickListener {
@@ -82,6 +82,8 @@ class TripPlanFragment : Fragment()
             viewModel.planTripIntent(requireContext())?.let {startActivityForResult(it, TRIP_OPTIONS_REQUEST)}
        }
 
+        originName.text = viewModel.trip.origin?.disassembledName
+        destinationName.text = viewModel.trip.destination?.disassembledName
         dateInput.text = viewModel.dateString
         timeInput.text = viewModel.timeString
 
