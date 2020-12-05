@@ -47,6 +47,7 @@
         android:layout_marginTop="@dimen/list_cell_trip_option_spacing"
         app:layout_constrainedHeight="true"
         app:layout_constraintTop_toBottomOf="@id/searchboxLayout"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 

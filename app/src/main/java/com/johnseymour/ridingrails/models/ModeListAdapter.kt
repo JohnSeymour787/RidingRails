@@ -2,10 +2,12 @@ package com.johnseymour.ridingrails.models
 
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
+import com.johnseymour.ridingrails.models.data.StopDetails
 import com.johnseymour.ridingrails.models.data.TravelMode
 
-class ModeListAdapter(var modes: List<TravelMode>? = null): RecyclerView.Adapter<ModeListAdapter.ModeListViewHolder>()
+class ModeListAdapter(var modes: List<TravelMode>? = null, var stop: StopDetails? = null, private val onClick: ((StopDetails) -> Unit)): RecyclerView.Adapter<ModeListAdapter.ModeListViewHolder>()
 {
     inner class ModeListViewHolder(view: TextView): RecyclerView.ViewHolder(view)
     {
@@ -17,14 +19,15 @@ class ModeListAdapter(var modes: List<TravelMode>? = null): RecyclerView.Adapter
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ModeListViewHolder
     {
-        /*
-        val stopDetailsCell = StopSearchViewCell(parent.context).apply {
+
+        val textView = TextView(parent.context).apply {
             layoutParams = ConstraintLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-            availableModesList.layoutManager = LinearLayoutManager(parent.context)
-            availableModesList.adapter = ModeListAdapter()
+            //Clicking any item in the ModeList always has the same response as
+            //clicking the StopSearch item that this adapter is a part of.
+            setOnClickListener { stop?.let { onClick(it) } }
         }
-         */
-        return ModeListViewHolder(TextView(parent.context))
+
+        return ModeListViewHolder(textView)
     }
 
     override fun onBindViewHolder(holder: ModeListViewHolder, position: Int)

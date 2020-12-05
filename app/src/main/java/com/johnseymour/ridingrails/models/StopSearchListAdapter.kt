@@ -19,9 +19,12 @@ class StopSearchListAdapter(var stops: List<StopDetails>, private val onClick: (
                 //Attempt to get the suburb from the latter part of the name string
                 stop.name.split(", ").lastOrNull()?.let { stopSuburb.text = it }
                 setOnClickListener{onClick(stop)}
-                //Update the modes list adapter's data
-                (availableModesList.adapter as? ModeListAdapter)?.modes = stop.travelModes
-                availableModesList.adapter?.notifyDataSetChanged()
+                //Update the modes list adapter's data and its stop for its own onClick listener
+                (availableModesList.adapter as? ModeListAdapter)?.apply {
+                    modes = stop.travelModes
+                    this.stop = stop
+                    notifyDataSetChanged()
+                }
             }
         }
     }
@@ -31,7 +34,7 @@ class StopSearchListAdapter(var stops: List<StopDetails>, private val onClick: (
         val stopDetailsCell = StopSearchViewCell(parent.context).apply {
             layoutParams = ConstraintLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
             availableModesList.layoutManager = LinearLayoutManager(parent.context)
-            availableModesList.adapter = ModeListAdapter()
+            availableModesList.adapter = ModeListAdapter(onClick = onClick)
         }
 
         return StopSearchViewHolder(stopDetailsCell)
