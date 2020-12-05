@@ -231,7 +231,8 @@ object NetworkRepository
             override fun onResponse(call: Call<Array<StopDetails>>, response: Response<Array<StopDetails>>)
             {
                 response.body()?.let {
-                    liveData.postValue(StatusData.success(it.toList()))
+                    //Sort the list alphabetically by disassembled name
+                    liveData.postValue(StatusData.success(it.toList().sortedWith(compareBy { element -> element.disassembledName })))
 
                     //TODO() Add "Stop not found error" Status enum and allow for the observing activity to get a localised string resource
                 } ?: liveData.postValue(StatusData.generalFailure("Couldn't find \"$stopString\" station. Please try another search"))
