@@ -24,9 +24,9 @@ import java.time.LocalDateTime
 
 class TripPlanFragment : Fragment()
 {
-
     companion object
     {
+        private const val TRIP_OPTIONS_REQUEST = 0
         const val ORIGIN_SEARCH_REQUEST = "request_stop_search_origin"
         const val DESTINATION_SEARCH_REQUEST = "request_stop_search_destination"
     }
@@ -52,17 +52,26 @@ class TripPlanFragment : Fragment()
             parentFragmentManager.setFragmentResult(DESTINATION_SEARCH_REQUEST, bundleOf())
         }
 
+        timeInput.setOnClickListener{showTimePickerDialogue()}
+        dateInput.setOnClickListener{showDatePickerDialogue()}
+
         //Listeners for when the StopSearchFragment returns either origin or destination data
         //Update the ViewModel's Trip instance and show the name on the screen
         parentFragmentManager.apply {
             setFragmentResultListener(ORIGIN_SEARCH_KEY, viewLifecycleOwner) { _, bundle ->
-                bundle.getParcelable<StopDetails>(ORIGIN_SEARCH_KEY)?.let {  viewModel.trip.origin = it }
-                originName.text = viewModel.trip.origin?.disassembledName
+                bundle.getParcelable<StopDetails>(ORIGIN_SEARCH_KEY)?.let {
+                    viewModel.trip.origin = it
+                    originName.text = it.disassembledName
+                    showPlanButton()
+                }
                 parentFragmentManager.popBackStack()
             }
             setFragmentResultListener(DESTINATION_SEARCH_KEY, viewLifecycleOwner) { _, bundle ->
-                bundle.getParcelable<StopDetails>(DESTINATION_SEARCH_KEY)?.let { viewModel.trip.destination = it }
-                destinationName.text = viewModel.trip.destination?.disassembledName
+                bundle.getParcelable<StopDetails>(DESTINATION_SEARCH_KEY)?.let {
+                    viewModel.trip.destination = it
+                    destinationName.text = it.disassembledName
+                    showPlanButton()
+                }
                 parentFragmentManager.popBackStack()
             }
         }
@@ -70,8 +79,8 @@ class TripPlanFragment : Fragment()
         planTripButton.setOnClickListener {
             //ViewModel uses its properties to create an intent with the user parameters
             //to allow the 2nd activity to make the API calls.
-            startActivityForResult(viewModel.planTripIntent(requireContext()), TRIP_OPTIONS_REQUEST)
-        }
+            viewModel.planTripIntent(requireContext())?.let {startActivityForResult(it, TRIP_OPTIONS_REQUEST)}
+       }
 
         dateInput.text = viewModel.dateString
         timeInput.text = viewModel.timeString
@@ -85,7 +94,6 @@ class TripPlanFragment : Fragment()
         favouriteTripsList.layoutManager = LinearLayoutManager(context)
         favouriteTripsList.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
         favouriteTripsList.adapter = FavouriteTripsListAdapter(viewModel.favouriteTrips, ::favouriteCellClicked)
-
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?)
@@ -103,7 +111,7 @@ class TripPlanFragment : Fragment()
     }
 
     /**onClick listener for the dateInput TextView**/
-    fun showDatePickerDialogue(v: View)
+    private fun showDatePickerDialogue()
     {
         viewModel.plannedTime.let {
             DatePickerDialog(requireContext(),
@@ -116,7 +124,7 @@ class TripPlanFragment : Fragment()
     }
 
     /**onClick listener for the timeInput TextView**/
-    fun showTimePickerDialogue(v: View)
+    private fun showTimePickerDialogue()
     {
         viewModel.plannedTime.let {
             TimePickerDialog(requireContext(), R.style.TripPlanningDialogs, ::onTimeSet, it.hour, it.minute, false).show()
@@ -136,7 +144,7 @@ class TripPlanFragment : Fragment()
     }
 
     /**Updates time portion of the ViewModel's plannedTime property and updates the time text.
-     * Used as onTimeSet listent for the TimePickerDialogue created in this activity.*/
+     * Used as onTimeSet listener for the TimePickerDialogue created in this activity.*/
     private fun onTimeSet(timePicker: TimePicker, hour: Int, minute: Int)
     {
         viewModel.apply {
@@ -146,16 +154,6 @@ class TripPlanFragment : Fragment()
         timeInput.text = viewModel.timeString
     }
 
-    fun planNewTrip(v: View)
-    {
-       // if (validateFields())
-    //    {
-            //ViewModel uses its properties to create an intent with the user parameters
-            //to allow the 2nd activity to make the API calls.
-            startActivityForResult(viewModel.planTripIntent(requireContext()), TRIP_OPTIONS_REQUEST)
-   //     }
-    }
-
     /**Called when a favourite Trip is tapped. Begins a trip plan using this origin and destination station, starting now.**/
     private fun favouriteCellClicked(trip: Trip)
     {
@@ -163,9 +161,19 @@ class TripPlanFragment : Fragment()
         //Thus, don't expect a result.
         startActivity(viewModel.planTripIntent(requireContext(), trip))
     }
-}
 
-private const val TRIP_OPTIONS_REQUEST = 0
+    private fun showPlanButton()
+    {
+        if ((originName.text.isNotEmpty()) && (destinationName.text.isNotEmpty()))
+        {
+            planTripButton.visibility = View.VISIBLE
+        }
+        else
+        {
+            planTripButton.visibility = View.GONE
+        }
+    }
+}
 
 private fun LocalDateTime.updatedDate(year: Int, month: Int, day: Int): LocalDateTime = withYear(year).withMonth(month).withDayOfMonth(day)
 private fun LocalDateTime.updatedTime(hour: Int, minute: Int): LocalDateTime = withHour(hour).withMinute(minute)

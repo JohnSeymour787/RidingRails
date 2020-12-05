@@ -3,7 +3,6 @@ package com.johnseymour.ridingrails
 import android.content.Context
 import android.content.Intent
 import androidx.lifecycle.ViewModel
-import com.johnseymour.ridingrails.models.data.StopDetails
 import com.johnseymour.ridingrails.models.data.Trip
 import java.io.BufferedReader
 import java.time.LocalDateTime
@@ -21,10 +20,17 @@ class TripPlanViewModel : ViewModel()
 
     private var storageRead = false
 
-    fun planTripIntent(context: Context, trip: Trip = this.trip): Intent
+    fun planTripIntent(context: Context, trip: Trip = this.trip): Intent?
     {
-        return TripOptionsActivity.planTripIntent(context, trip, plannedTime.format(
-            Constants.Formatters.APIDateFormatter), plannedTime.toAPITimeString())
+        return if (trip.validTrip())
+        {
+            TripOptionsActivity.planTripIntent(context, trip, plannedTime.format(
+                Constants.Formatters.APIDateFormatter), plannedTime.toAPITimeString())
+        }
+        else
+        {
+            null
+        }
     }
 
     fun readFavourites(reader: BufferedReader?)
