@@ -8,8 +8,8 @@ import com.johnseymour.ridingrails.models.data.StopDetails
 
 class StopSearchViewModel : ViewModel()
 {
-    private var searchString = ""
-    lateinit var searchList: LiveData<StatusData<List<StopDetails>>>
+    var searchString = ""
+    var searchList: LiveData<StatusData<List<StopDetails>>>? = null
 
     fun searchStops(searchTerm: String)
     {

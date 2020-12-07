@@ -41,7 +41,7 @@ class TripPlanFragment : Fragment()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?)
     {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProvider(requireActivity()).get(TripPlanViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(TripPlanViewModel::class.java)
 
         //Signal to the activity to add an origin fragment to its fragment container
         originName.setOnClickListener {
@@ -96,6 +96,8 @@ class TripPlanFragment : Fragment()
         favouriteTripsList.layoutManager = LinearLayoutManager(context)
         favouriteTripsList.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
         favouriteTripsList.adapter = FavouriteTripsListAdapter(viewModel.favouriteTrips, ::favouriteCellClicked)
+
+        showPlanButton()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?)

@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.widget.TextView
 import androidx.activity.addCallback
 import androidx.core.os.bundleOf
 import androidx.core.widget.doOnTextChanged
@@ -21,6 +22,8 @@ import com.johnseymour.ridingrails.models.data.StopDetails
 import kotlinx.android.synthetic.main.stop_search_fragment.*
 import java.util.*
 
+/**@param searchKey Represents the fragment key used to indicate what data this fragment
+ * will be used to search for, namely, Origin or Destination stations.**/
 class StopSearchFragment(var searchKey: String? = null) : Fragment()
 {
     private var delayTimer = Timer()
@@ -35,6 +38,9 @@ class StopSearchFragment(var searchKey: String? = null) : Fragment()
         }
     }
 
+    //Used on configuration change to prevent onTextChanged listener being called for first time
+    //text-setting
+    private var textInitialised = false
     private lateinit var viewModel: StopSearchViewModel
     private val resultListAdapter = StopSearchListAdapter(listOf(), ::stopSelected)
 
@@ -43,10 +49,25 @@ class StopSearchFragment(var searchKey: String? = null) : Fragment()
         return inflater.inflate(R.layout.stop_search_fragment, container, false)
     }
 
+    override fun onResume()
+    {
+        super.onResume()
+
+        //Prevent onTextChanged listener being called for the proceeding line
+        textInitialised = true
+        searchInput.setText(viewModel.searchString, TextView.BufferType.EDITABLE)
+
+        //Move the cursor to the end position
+        searchInput.setSelection(viewModel.searchString.length)
+
+        //If coming from a configuration change, get the data already available without making a new API
+        //call
+        setDataObserver()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?)
     {
         super.onViewCreated(view, savedInstanceState)
-
         viewModel = ViewModelProvider(this).get(StopSearchViewModel::class.java)
 
         //Trigger the fragment listening for the search key, but don't have any data to pass back
@@ -71,6 +92,13 @@ class StopSearchFragment(var searchKey: String? = null) : Fragment()
         }
 
         searchInput.doOnTextChanged { text, _, _, _ ->
+            //If coming from a configuration change, want to ignore this listener and
+            //not make a new API request
+            if (textInitialised)
+            {
+                textInitialised = false
+                return@doOnTextChanged
+            }
             //Remove cancelled tasks from the timer and make a new one
             delayTimer.cancel()
             delayTimer = Timer()
@@ -113,7 +141,7 @@ class StopSearchFragment(var searchKey: String? = null) : Fragment()
 
     private fun setDataObserver()
     {
-        viewModel.searchList.observe(viewLifecycleOwner) {
+        viewModel.searchList?.observe(viewLifecycleOwner) {
             //TODO() All error reporting here
             when (it.status)
             {
@@ -128,10 +156,9 @@ class StopSearchFragment(var searchKey: String? = null) : Fragment()
         }
     }
 
-companion object
-{
+    companion object
+    {
         private const val API_CALL_DELAY_MS = 100L
-        fun newInstance(searchKey: String) = StopSearchFragment(searchKey)
-}
-
+        fun newInstance(searchKey: String? = null) = StopSearchFragment(searchKey)
+    }
 }

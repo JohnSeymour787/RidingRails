@@ -14,7 +14,7 @@ class TripSearchActivity : AppCompatActivity()
         ViewModelProvider(this).get(TripSearchViewModel::class.java)
     }
 
-    private var stopSearchFragment = StopSearchFragment()
+    private var stopSearchFragment = StopSearchFragment.newInstance()
 
     private fun addStopSearchFragment()
     {
