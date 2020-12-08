@@ -11,9 +11,8 @@ class StopSearchViewModel : ViewModel()
     var searchString = ""
     var searchList: LiveData<StatusData<List<StopDetails>>>? = null
 
-    fun searchStops(searchTerm: String)
+    fun searchStops()
     {
-        searchString = searchTerm
         searchList = NetworkRepository.getSingleStopDetails(searchString)
     }
 }

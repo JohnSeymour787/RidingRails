@@ -26,11 +26,11 @@ import java.util.*
 class StopSearchFragment(var searchKey: String? = null) : Fragment()
 {
     private var delayTimer = Timer()
-    private inner class APIDelayTask(val searchTerm: String): TimerTask()
+    private inner class APIDelayTask: TimerTask()
     {
         override fun run()
         {
-            viewModel.searchStops(searchTerm)
+            viewModel.searchStops()
             activity?.runOnUiThread {
                 setDataObserver()
             }
@@ -54,7 +54,7 @@ class StopSearchFragment(var searchKey: String? = null) : Fragment()
     {
         super.onResume()
         //Move the cursor to the end position
-        searchInput.setSelection(viewModel.searchString.length)
+        searchInput.setSelection(searchInput?.text?.length ?: 0)
         //Observe the ViewModel's LiveData if it exists, avoiding the need for another API call,
         //if coming from a configuration change
         setDataObserver()
@@ -87,6 +87,8 @@ class StopSearchFragment(var searchKey: String? = null) : Fragment()
         }
 
         searchInput.doOnTextChanged { text, _, _, _ ->
+            //ViewModel always reflects the most recent search term
+            viewModel.searchString = text?.toString() ?: ""
             //If coming from a configuration change or any first character, want to ignore this listener and
             //not make a new API request
             if (firstTextChange)
@@ -99,10 +101,10 @@ class StopSearchFragment(var searchKey: String? = null) : Fragment()
             delayTimer = Timer()
 
             //API usually doesn't return much for searches with less than 3 characters
-            if (text?.length ?:0 > 2)
+            if (viewModel.searchString.length > 2)
             {
                 //Schedule the API call to occur a short time later, if the user hasn't typed another character
-                delayTimer.schedule(APIDelayTask(text.toString()), API_CALL_DELAY_MS)
+                delayTimer.schedule(APIDelayTask(), API_CALL_DELAY_MS)
             }
             else
             {
@@ -124,12 +126,11 @@ class StopSearchFragment(var searchKey: String? = null) : Fragment()
         (activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)?.hideSoftInputFromWindow(searchInput.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
     }
 
-    //Lower keyboard and update viewModel
+    //Lower the keyboard
     override fun onPause()
     {
         super.onPause()
         lowerKeyboard()
-        viewModel.searchString = searchInput.text.toString()
     }
 
     private fun stopSelected(stop: StopDetails)
