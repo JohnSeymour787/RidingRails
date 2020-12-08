@@ -1,5 +1,6 @@
 package com.johnseymour.ridingrails.apisupport
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.GsonBuilder
 import com.johnseymour.ridingrails.apisupport.models.StatusData
@@ -29,7 +30,7 @@ object NetworkRepository
 
     private val tripPlannerAPI by lazy {
         val gsonBuilder = GsonBuilder().run {
-            registerTypeAdapter(StopDetails::class.java, StopDetailsDeserialiser)
+            registerTypeAdapter(Array<StopDetails>::class.java, StopDetailsDeserialiser)
             registerTypeAdapter(PlatformDetails::class.java, PlatformDetailsDeserialiser)
             registerTypeAdapter(TripLeg::class.java, TripLegDeserialiser)
             registerTypeAdapter(Array<TripJourney>::class.java, TripJourneyArrayDeserialiser)
@@ -167,27 +168,27 @@ object NetworkRepository
         //Otherwise, need to make new API call
         val requestToMake = tripPlannerAPI.getStopDetails(searchTerm)
 
-        requestToMake.enqueue(object: Callback<StopDetails>
+        requestToMake.enqueue(object: Callback<Array<StopDetails>>
         {
-            override fun onResponse(call: Call<StopDetails>, response: Response<StopDetails>)
+            override fun onResponse(call: Call<Array<StopDetails>>, response: Response<Array<StopDetails>>)
             {
                 response.body()?.let {
                     //Adding this response to the cache, indexed by the disassembled name (doesn't include ", Sydney" at end)
-                    stopDetailsCache[it.disassembledName] = it
+              //      stopDetailsCache[it.disassembledName] = it.firstOrNull()
                     //Add reference to same StopDetails but using what the user entered as the index, because they might type
                     //something similar next time
-                    stopDetailsCache[searchTerm] = it
+            //        stopDetailsCache[searchTerm] = it
 
-                    liveData.postValue(StatusData.success(it))
+                //    liveData.postValue(StatusData.success(it))
 
                     //Resolve the promise for this deferred
-                    deferred.resolve(it)
+             //       deferred.resolve(it)
                     //TODO() Add "Stop not found error" Status enum and allow for the observing activity to get a localised string resource
                 } ?: liveData.postValue(StatusData.generalFailure("Couldn't find \"$stopString\" station. Please try another search"))
             }
 
             //Failure error needs to be handled elsewhere
-            override fun onFailure(call: Call<StopDetails>, t: Throwable)
+            override fun onFailure(call: Call<Array<StopDetails>>, t: Throwable)
             {
                 //If a network error occurred (part of IOException)
                 if (t is IOException)
@@ -205,5 +206,55 @@ object NetworkRepository
         })
 
         return deferred.promise
+    }
+
+    fun getSingleStopDetails(stopString: String): LiveData<StatusData<List<StopDetails>>>
+    {
+        val liveData = MutableLiveData<StatusData<List<StopDetails>>>()
+        val searchTerm = stopString.toLowerCase(Locale.getDefault())
+
+        /*
+        TODO() Maybe don't need the cache at all
+        //If the cache has the stop in it, use this and immediately return
+        searchStopDetailCache(searchTerm)?.let {
+            liveData.postValue(StatusData.success(it))
+            deferred.resolve(it)
+            return deferred.promise
+        }
+        */
+
+        //Otherwise, need to make new API call
+        val requestToMake = tripPlannerAPI.getStopDetails(searchTerm)
+
+        requestToMake.enqueue(object: Callback<Array<StopDetails>>
+        {
+            override fun onResponse(call: Call<Array<StopDetails>>, response: Response<Array<StopDetails>>)
+            {
+                response.body()?.let {
+                    //Sort the list alphabetically by disassembled name
+                    liveData.postValue(StatusData.success(it.toList().sortedWith(compareBy { element -> element.disassembledName })))
+
+                    //TODO() Add "Stop not found error" Status enum and allow for the observing activity to get a localised string resource
+                } ?: liveData.postValue(StatusData.generalFailure("Couldn't find \"$stopString\" station. Please try another search"))
+            }
+
+            //Failure error needs to be handled elsewhere
+            override fun onFailure(call: Call<Array<StopDetails>>, t: Throwable)
+            {
+                //If a network error occurred (part of IOException)
+                if (t is IOException)
+                {
+                    //Post a network error. Error text will be sent elsewhere
+                    liveData.postValue(StatusData.networkError())
+                }
+                //Otherwise, post the localised general failure
+                else
+                {
+                    liveData.postValue(StatusData.generalFailure(t.localizedMessage))
+                }
+            }
+        })
+
+        return liveData
     }
 }

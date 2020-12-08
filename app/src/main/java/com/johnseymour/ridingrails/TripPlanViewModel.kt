@@ -1,19 +1,15 @@
-package com.johnseymour.ridingrails.models
+package com.johnseymour.ridingrails
 
 import android.content.Context
 import android.content.Intent
 import androidx.lifecycle.ViewModel
-import com.johnseymour.ridingrails.Constants
-import com.johnseymour.ridingrails.DiskRepository
-import com.johnseymour.ridingrails.TripOptionsActivity
 import com.johnseymour.ridingrails.models.data.Trip
 import java.io.BufferedReader
 import java.time.LocalDateTime
 
-class TripSearchViewModel: ViewModel()
+class TripPlanViewModel : ViewModel()
 {
-    var origin = ""
-    var destination = ""
+    val trip = Trip()
     var plannedTime: LocalDateTime = LocalDateTime.now()
     val dateString: String
         get() = plannedTime.format(Constants.Formatters.dateFormatter)
@@ -24,16 +20,17 @@ class TripSearchViewModel: ViewModel()
 
     private var storageRead = false
 
-    fun planTripIntent(context: Context): Intent
+    fun planTripIntent(context: Context, trip: Trip = this.trip): Intent?
     {
-        return TripOptionsActivity.planTripIntent(context, origin, destination, plannedTime.format(
-            Constants.Formatters.APIDateFormatter), plannedTime.toAPITimeString())
-    }
-
-    fun planFavouriteTripIntent(context: Context, trip: Trip): Intent
-    {
-        return TripOptionsActivity.planTripIntent(context, trip, plannedTime.format(
-            Constants.Formatters.APIDateFormatter), plannedTime.toAPITimeString())
+        return if (trip.validTrip())
+        {
+            TripOptionsActivity.planTripIntent(context, trip, plannedTime.format(
+                Constants.Formatters.APIDateFormatter), plannedTime.toAPITimeString())
+        }
+        else
+        {
+            null
+        }
     }
 
     fun readFavourites(reader: BufferedReader?)

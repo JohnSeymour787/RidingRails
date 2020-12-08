@@ -6,29 +6,33 @@ import com.johnseymour.ridingrails.models.data.TravelMode
 import java.lang.reflect.Type
 
 
-internal object StopDetailsDeserialiser: JsonDeserializer<StopDetails>
+internal object StopDetailsDeserialiser: JsonDeserializer<Array<StopDetails>>
 {
-    override fun deserialize(json: JsonElement?, typeOfT: Type?, context: JsonDeserializationContext?): StopDetails?
+    override fun deserialize(json: JsonElement?, typeOfT: Type?, context: JsonDeserializationContext?): Array<StopDetails>
     {
-        val topLevelJSON = json?.asJsonObject ?: return null
+        val result = mutableListOf<StopDetails>()
+        val topLevelJSON = json?.asJsonObject ?: return result.toTypedArray()
 
         topLevelJSON.getAsJsonArray("locations")?.forEach { element ->
-            //Searches the location's array in the response and returns the first appropriate location
-            // (ie, a location that serves trains in this case, should mostly be the first element of this
-            // array anyway)
+            //Searches the location's array in the response and adds all appropriate locations to the return list
+            //ie, all locations that serve trains
             element?.asJsonObject?.let {
-                return deserialiseSingleStop(it, context) ?: return@forEach
+                deserialiseSingleStop(it, context)?.let { stop -> result.add(stop) } ?: return@forEach
             }
-        }
         //Otherwise, assume this JSON is for a single StopDetails object, so try to deserialise it like one
-        return deserialiseSingleStop(topLevelJSON, context)
+        } ?: run {
+            deserialiseSingleStop(topLevelJSON, context)?.let { stop -> result.add(stop) }
+        }
+
+        return result.toTypedArray()
     }
 
     private fun deserialiseSingleStop(stopTopLevel: JsonObject, context: JsonDeserializationContext?): StopDetails?
     {
         with (stopTopLevel)
         {
-            val id = getAsJsonPrimitive("id")?.asInt ?: return null
+            //Need to convert to string first because some IDs are strings. Train station IDs are always integers
+            val id = getAsJsonPrimitive("id")?.asString?.toIntOrNull() ?: return null
             val name = getAsJsonPrimitive("name").asString ?: ""
             val disassembledName = getAsJsonPrimitive("disassembledName").asString ?: ""
 

@@ -19,7 +19,7 @@ internal object PlatformDetailsDeserialiser: JsonDeserializer<PlatformDetails>
 
         val platformID = platformDetailsJSON.getAsJsonPrimitive("id").asInt
         val parentStopID = parentJSON.getAsJsonPrimitive("id").asInt
-        val name = parentJSON.getAsJsonPrimitive("disassembledName").asString ?: ""
+        val name = parentJSON.getAsJsonPrimitive("disassembledName")?.asString ?: parentJSON.getAsJsonPrimitive("name")?.asString ?: ""
 
         //Strings can differ for what this Platform detail represents, or may be null (see PlatformDetails definition)
         val time1String: String? = platformDetailsJSON.run {
