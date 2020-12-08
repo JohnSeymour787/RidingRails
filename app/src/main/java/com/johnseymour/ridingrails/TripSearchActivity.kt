@@ -2,24 +2,19 @@ package com.johnseymour.ridingrails
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
-import com.johnseymour.ridingrails.models.TripSearchViewModel
 
 const val ORIGIN_SEARCH_KEY = "origin"
 const val DESTINATION_SEARCH_KEY = "destination"
+private const val STOP_SEARCH_FRAGMENT_BASE_NAME = "_stop_search_fragment"
 
 class TripSearchActivity : AppCompatActivity()
 {
-    private val viewModel by lazy {
-        ViewModelProvider(this).get(TripSearchViewModel::class.java)
-    }
-
-    private var stopSearchFragment = StopSearchFragment.newInstance()
-
-    private fun addStopSearchFragment(cake: StopSearchFragment? = null)
+    private fun addStopSearchFragment(searchKey: String)
     {
-        cake?.let { supportFragmentManager.beginTransaction().add(R.id.fragmentContainer, it).addToBackStack(null).commit() }?:
-        run { supportFragmentManager.beginTransaction().add(R.id.fragmentContainer, stopSearchFragment).addToBackStack(null).commit() }
+        supportFragmentManager.beginTransaction()
+            .add(R.id.fragmentContainer, StopSearchFragment.newInstance(searchKey))
+            .addToBackStack(searchKey + STOP_SEARCH_FRAGMENT_BASE_NAME)
+            .commit()
     }
 
     override fun onCreate(savedInstanceState: Bundle?)
@@ -30,12 +25,10 @@ class TripSearchActivity : AppCompatActivity()
         //Listens for request signals from the TripPlanFragment and creates a StopSearchFragment for the appropriate data
         supportFragmentManager.apply {
             setFragmentResultListener(TripPlanFragment.ORIGIN_SEARCH_REQUEST, this@TripSearchActivity) { _, _ ->
-                stopSearchFragment.searchKey = ORIGIN_SEARCH_KEY
-                addStopSearchFragment(StopSearchFragment(ORIGIN_SEARCH_KEY))
+                addStopSearchFragment(ORIGIN_SEARCH_KEY)
             }
             setFragmentResultListener(TripPlanFragment.DESTINATION_SEARCH_REQUEST, this@TripSearchActivity) { _, _ ->
-                stopSearchFragment.searchKey = DESTINATION_SEARCH_KEY
-                addStopSearchFragment(StopSearchFragment(DESTINATION_SEARCH_KEY))
+                addStopSearchFragment(DESTINATION_SEARCH_KEY)
             }
         }
     }
