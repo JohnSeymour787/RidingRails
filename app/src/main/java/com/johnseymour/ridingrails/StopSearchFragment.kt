@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.TextView
 import androidx.activity.addCallback
 import androidx.core.os.bundleOf
 import androidx.core.widget.doOnTextChanged
@@ -40,7 +39,7 @@ class StopSearchFragment(var searchKey: String? = null) : Fragment()
 
     //Used on configuration change to prevent onTextChanged listener being called for first time
     //text-setting
-    private var textInitialised = false
+    private var firstTextChange = true
     private lateinit var viewModel: StopSearchViewModel
     private val resultListAdapter = StopSearchListAdapter(listOf(), ::stopSelected)
 
@@ -49,19 +48,15 @@ class StopSearchFragment(var searchKey: String? = null) : Fragment()
         return inflater.inflate(R.layout.stop_search_fragment, container, false)
     }
 
+    //If coming from a configuration change, searchInput's text value will be
+    //automatically saved and restored at this point
     override fun onResume()
     {
         super.onResume()
-
-        //Prevent onTextChanged listener being called for the proceeding line
-        textInitialised = true
-        searchInput.setText(viewModel.searchString, TextView.BufferType.EDITABLE)
-
         //Move the cursor to the end position
         searchInput.setSelection(viewModel.searchString.length)
-
-        //If coming from a configuration change, get the data already available without making a new API
-        //call
+        //Observe the ViewModel's LiveData if it exists, avoiding the need for another API call,
+        //if coming from a configuration change
         setDataObserver()
     }
 
@@ -92,11 +87,11 @@ class StopSearchFragment(var searchKey: String? = null) : Fragment()
         }
 
         searchInput.doOnTextChanged { text, _, _, _ ->
-            //If coming from a configuration change, want to ignore this listener and
+            //If coming from a configuration change or any first character, want to ignore this listener and
             //not make a new API request
-            if (textInitialised)
+            if (firstTextChange)
             {
-                textInitialised = false
+                firstTextChange = false
                 return@doOnTextChanged
             }
             //Remove cancelled tasks from the timer and make a new one
@@ -111,8 +106,12 @@ class StopSearchFragment(var searchKey: String? = null) : Fragment()
             }
             else
             {
+                //Clear the ViewModel's LiveData
+                viewModel.searchList?.removeObservers(viewLifecycleOwner)
+                viewModel.searchList = null
                 //Clear the adapter's list
                 resultListAdapter.stops = listOf()
+                resultListAdapter.notifyDataSetChanged()
             }
         }
         stopDetailsList.adapter = resultListAdapter
@@ -125,12 +124,12 @@ class StopSearchFragment(var searchKey: String? = null) : Fragment()
         (activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)?.hideSoftInputFromWindow(searchInput.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
     }
 
+    //Lower keyboard and update viewModel
     override fun onPause()
     {
         super.onPause()
         lowerKeyboard()
-        resultListAdapter.stops = listOf()
-        searchInput.text?.clear()
+        viewModel.searchString = searchInput.text.toString()
     }
 
     private fun stopSelected(stop: StopDetails)

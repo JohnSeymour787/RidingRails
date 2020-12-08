@@ -16,9 +16,10 @@ class TripSearchActivity : AppCompatActivity()
 
     private var stopSearchFragment = StopSearchFragment.newInstance()
 
-    private fun addStopSearchFragment()
+    private fun addStopSearchFragment(cake: StopSearchFragment? = null)
     {
-        supportFragmentManager.beginTransaction().add(R.id.fragmentContainer, stopSearchFragment).addToBackStack(null).commit()
+        cake?.let { supportFragmentManager.beginTransaction().add(R.id.fragmentContainer, it).addToBackStack(null).commit() }?:
+        run { supportFragmentManager.beginTransaction().add(R.id.fragmentContainer, stopSearchFragment).addToBackStack(null).commit() }
     }
 
     override fun onCreate(savedInstanceState: Bundle?)
@@ -30,11 +31,11 @@ class TripSearchActivity : AppCompatActivity()
         supportFragmentManager.apply {
             setFragmentResultListener(TripPlanFragment.ORIGIN_SEARCH_REQUEST, this@TripSearchActivity) { _, _ ->
                 stopSearchFragment.searchKey = ORIGIN_SEARCH_KEY
-                addStopSearchFragment()
+                addStopSearchFragment(StopSearchFragment(ORIGIN_SEARCH_KEY))
             }
             setFragmentResultListener(TripPlanFragment.DESTINATION_SEARCH_REQUEST, this@TripSearchActivity) { _, _ ->
                 stopSearchFragment.searchKey = DESTINATION_SEARCH_KEY
-                addStopSearchFragment()
+                addStopSearchFragment(StopSearchFragment(DESTINATION_SEARCH_KEY))
             }
         }
     }
