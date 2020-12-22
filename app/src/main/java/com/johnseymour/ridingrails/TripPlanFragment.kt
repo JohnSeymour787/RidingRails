@@ -3,6 +3,7 @@ package com.johnseymour.ridingrails
 import android.app.Activity.RESULT_OK
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.Context
 import android.content.Intent
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
@@ -12,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.DatePicker
 import android.widget.TimePicker
+import androidx.activity.result.contract.ActivityResultContract
 import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -26,12 +28,29 @@ class TripPlanFragment : Fragment()
 {
     companion object
     {
-        private const val TRIP_OPTIONS_REQUEST = 0
         const val ORIGIN_SEARCH_REQUEST = "request_stop_search_origin"
         const val DESTINATION_SEARCH_REQUEST = "request_stop_search_destination"
     }
 
     private lateinit var viewModel: TripPlanViewModel
+    private val startForResult = registerForActivityResult(object: ActivityResultContract<Unit, Trip?>() {
+        //ViewModel uses its properties to create an intent with the user parameters to allow the 2nd activity to make the API calls.
+        override fun createIntent(context: Context, input: Unit?): Intent = viewModel.planTripIntent(context) ?: Intent()
+
+        override fun parseResult(resultCode: Int, intent: Intent?): Trip?
+        {
+            if (resultCode != RESULT_OK) {return null}
+
+            return intent?.getParcelableExtra(TripOptionsActivity.TRIP_KEY)
+        }
+    })
+    //Activity result callback
+    { trip ->
+        trip ?: return@registerForActivityResult
+        //Add the newly-favourited Trip and notify the list's adapter
+        viewModel.favouriteTrips.add(trip)
+        favouriteTripsList.adapter?.notifyItemInserted(viewModel.favouriteTrips.size)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
     {
@@ -77,9 +96,8 @@ class TripPlanFragment : Fragment()
         }
 
         planTripButton.setOnClickListener {
-            //ViewModel uses its properties to create an intent with the user parameters
-            //to allow the 2nd activity to make the API calls.
-            viewModel.planTripIntent(requireContext())?.let {startActivityForResult(it, TRIP_OPTIONS_REQUEST)}
+            //Launch the ActivityResultLauncher
+            startForResult.launch(null)
        }
 
         originName.text = viewModel.trip.origin?.disassembledName
@@ -98,20 +116,6 @@ class TripPlanFragment : Fragment()
         favouriteTripsList.adapter = FavouriteTripsListAdapter(viewModel.favouriteTrips, ::favouriteCellClicked)
 
         showPlanButton()
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?)
-    {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        if (resultCode != RESULT_OK) {return}
-
-        if (requestCode == TRIP_OPTIONS_REQUEST)
-        {
-            //Add the newly-favourited Trip and notify the list's adapter
-            viewModel.favouriteTrips.add(data?.getParcelableExtra<Trip>(TripOptionsActivity.TRIP_KEY) ?: return)
-            favouriteTripsList.adapter?.notifyItemInserted(viewModel.favouriteTrips.size)
-        }
     }
 
     /**onClick listener for the dateInput TextView**/

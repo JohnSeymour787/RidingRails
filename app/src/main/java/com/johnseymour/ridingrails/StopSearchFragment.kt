@@ -23,7 +23,7 @@ import java.util.*
 
 /**@param searchKey Represents the fragment key used to indicate what data this fragment
  * will be used to search for, namely, Origin or Destination stations.**/
-class StopSearchFragment(var searchKey: String? = null) : Fragment()
+class StopSearchFragment(private var searchKey: String? = null) : Fragment()
 {
     private var delayTimer = Timer()
     private inner class APIDelayTask: TimerTask()
