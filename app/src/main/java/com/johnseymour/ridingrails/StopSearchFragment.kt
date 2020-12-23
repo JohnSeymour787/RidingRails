@@ -146,6 +146,8 @@ class StopSearchFragment(private var searchKey: String? = null) : Fragment()
             {
                 Status.Success ->
                 {
+                    //If there was an error before, now show the stop result list like normal again
+                    clearError()
                     resultListAdapter.apply {
                         stops = it?.data ?: listOf()
                         notifyDataSetChanged()
@@ -162,6 +164,13 @@ class StopSearchFragment(private var searchKey: String? = null) : Fragment()
         errorText.text = message
         errorText.visibility = View.VISIBLE
         stopDetailsList.visibility = View.INVISIBLE
+    }
+
+    private fun clearError()
+    {
+        errorText.text = ""
+        errorText.visibility = View.GONE
+        stopDetailsList.visibility = View.VISIBLE
     }
 
     companion object
