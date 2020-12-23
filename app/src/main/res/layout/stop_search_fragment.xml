@@ -40,6 +40,19 @@
             tools:text="Central"/>
     </com.google.android.material.textfield.TextInputLayout>
 
+    <TextView
+        android:id="@+id/errorText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/text_font_size_normal"
+        tools:text="Error Message"
+        android:visibility="visible"
+        android:layout_marginTop="@dimen/list_cell_trip_option_spacing"
+        android:paddingHorizontal="@dimen/grid_box_margin"
+        app:layout_constraintTop_toBottomOf="@id/searchboxLayout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/stopDetailsList"
         android:layout_width="match_parent"

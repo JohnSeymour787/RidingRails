@@ -142,7 +142,6 @@ class StopSearchFragment(private var searchKey: String? = null) : Fragment()
     private fun setDataObserver()
     {
         viewModel.searchList?.observe(viewLifecycleOwner) {
-            //TODO() All error reporting here
             when (it.status)
             {
                 Status.Success ->
@@ -152,8 +151,17 @@ class StopSearchFragment(private var searchKey: String? = null) : Fragment()
                         notifyDataSetChanged()
                     }
                 }
+                Status.NetworkError -> {showError(getString(R.string.no_internet_connection))}
+                Status.UnknownError -> {showError(it.message)}
             }
         }
+    }
+
+    private fun showError(message: String?)
+    {
+        errorText.text = message
+        errorText.visibility = View.VISIBLE
+        stopDetailsList.visibility = View.INVISIBLE
     }
 
     companion object

@@ -33,6 +33,7 @@ class TripPlanFragment : Fragment()
     }
 
     private lateinit var viewModel: TripPlanViewModel
+    //ActivityResultLauncher used to launch the TripOptionsActivity which can also return a result back to this activity
     private val startForResult = registerForActivityResult(object: ActivityResultContract<Unit, Trip?>() {
         //ViewModel uses its properties to create an intent with the user parameters to allow the 2nd activity to make the API calls.
         override fun createIntent(context: Context, input: Unit?): Intent = viewModel.planTripIntent(context) ?: Intent()
