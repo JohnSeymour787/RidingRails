@@ -119,6 +119,18 @@ class TripPlanFragment : Fragment()
         showPlanButton()
     }
 
+    override fun onResume()
+    {
+        super.onResume()
+
+        if (viewModel.plannedTime.isBefore(LocalDateTime.now()))
+        {
+            viewModel.plannedTime = LocalDateTime.now()
+            dateInput.text = viewModel.dateString
+            timeInput.text = viewModel.timeString
+        }
+    }
+
     /**onClick listener for the dateInput TextView**/
     private fun showDatePickerDialogue()
     {
