@@ -7,6 +7,7 @@
     tools:context=".TripOptionsActivity">
 
     <View
+        android:id="@+id/titleBackgroundView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constrainedHeight="true"
@@ -28,19 +29,21 @@
 
     <ImageButton
         android:id="@+id/favouriteTrip"
-        android:layout_width="48dp"
+        android:layout_width="@dimen/activity_trip_options_favourite_icon_dimens"
         android:layout_height="wrap_content"
         android:contentDescription="@string/trip_options_favourite_icon_description"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/origin"
         android:backgroundTint="@color/colorAccent"
-        android:src="@drawable/activity_trip_options_icon_unfavourite"/>
+        android:src="@drawable/activity_trip_options_icon_unfavourite"
+        app:layout_constraintTop_toBottomOf="@id/origin"
+        app:layout_constraintBottom_toTopOf="@id/destination"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <TextView
         android:id="@+id/origin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="@dimen/text_font_size_title"
+        android:textAlignment="center"
         tools:text="Museum"
         android:layout_marginTop="@dimen/grid_box_margin"
         app:layout_constraintTop_toTopOf="parent"
@@ -52,11 +55,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="@dimen/text_font_size_title"
+        android:textAlignment="center"
         tools:text="Central"
+        android:layout_marginBottom="@dimen/grid_box_margin"
         app:layout_constraintTop_toBottomOf="@id/favouriteTrip"
         app:layout_constraintStart_toStartOf="@id/origin"
-        app:layout_constraintEnd_toEndOf="@id/origin"
-        app:layout_constraintBottom_toTopOf="@id/tripOptionsList"/>
+        app:layout_constraintEnd_toEndOf="@id/origin"/>
 
     <TextView
         android:id="@+id/errorDisplay"
