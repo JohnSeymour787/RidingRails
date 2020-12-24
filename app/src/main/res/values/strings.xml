@@ -26,6 +26,11 @@
         <item quantity="other">%d hrs</item>
     </plurals>
 
+    <plurals name="days_from_now">
+        <item quantity="one">%d day</item>
+        <item quantity="other">%d days</item>
+    </plurals>
+
     <plurals name="interchanges">
         <item quantity="one">%d Interchange</item>
         <item quantity="other">%d Interchanges</item>

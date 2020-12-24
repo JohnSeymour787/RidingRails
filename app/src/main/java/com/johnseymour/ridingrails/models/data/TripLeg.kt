@@ -23,6 +23,6 @@ data class TripLeg(
         "T8" -> R.color.T8
         "T9" -> R.color.T9
         "M"  -> R.color.M
-        else -> R.color.T1
+        else -> R.color.colorWhiteText
     }
 }

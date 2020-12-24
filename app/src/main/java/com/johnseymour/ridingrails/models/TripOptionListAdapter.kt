@@ -20,7 +20,7 @@ class TripOptionListAdapter(private val trips: List<TripJourney>): RecyclerView.
             itemView.apply {
                 tripPrice.text = resources.getString(R.string.trip_options_cell_price, tripJourney.price)
                 departTime.text = tripJourney.startTime
-                timeFromNow.text = tripJourney.timeFromNow?.let { resources.getQuantityString(R.plurals.minutes_from_now, it, it) }
+                timeFromNow.text = tripJourney.timeFromNow(resources) ?: ""
                 platformName.text = tripJourney.originPlatformName
                 firstLine.text = tripJourney.firstLine
                 tripJourney.firstLineColor?.let {firstLine.background.setTint(resources.getColor(it, null))}
