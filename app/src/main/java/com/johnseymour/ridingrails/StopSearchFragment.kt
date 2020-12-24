@@ -23,7 +23,7 @@ import java.util.*
 
 /**@param searchKey Represents the fragment key used to indicate what data this fragment
  * will be used to search for, namely, Origin or Destination stations.**/
-class StopSearchFragment(var searchKey: String? = null) : Fragment()
+class StopSearchFragment(private var searchKey: String? = null) : Fragment()
 {
     private var delayTimer = Timer()
     private inner class APIDelayTask: TimerTask()
@@ -142,18 +142,35 @@ class StopSearchFragment(var searchKey: String? = null) : Fragment()
     private fun setDataObserver()
     {
         viewModel.searchList?.observe(viewLifecycleOwner) {
-            //TODO() All error reporting here
             when (it.status)
             {
                 Status.Success ->
                 {
+                    //If there was an error before, now show the stop result list like normal again
+                    clearError()
                     resultListAdapter.apply {
                         stops = it?.data ?: listOf()
                         notifyDataSetChanged()
                     }
                 }
+                Status.NetworkError -> {showError(getString(R.string.no_internet_connection))}
+                Status.UnknownError -> {showError(it.message)}
             }
         }
+    }
+
+    private fun showError(message: String?)
+    {
+        errorText.text = message
+        errorText.visibility = View.VISIBLE
+        stopDetailsList.visibility = View.INVISIBLE
+    }
+
+    private fun clearError()
+    {
+        errorText.text = ""
+        errorText.visibility = View.GONE
+        stopDetailsList.visibility = View.VISIBLE
     }
 
     companion object

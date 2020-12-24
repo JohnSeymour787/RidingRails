@@ -63,7 +63,7 @@ class TripOptionsActivity : AppCompatActivity()
                     incrementProgress()
                 }
 
-                Status.NetworkError -> showError(getString(R.string.trip_options_no_connection))
+                Status.NetworkError -> showError(getString(R.string.no_internet_connection))
                 Status.UnknownError -> showError(it.message)
             }
         }
@@ -81,7 +81,7 @@ class TripOptionsActivity : AppCompatActivity()
                     incrementProgress()
                 }
 
-                Status.NetworkError -> showError(getString(R.string.trip_options_no_connection))
+                Status.NetworkError -> showError(getString(R.string.no_internet_connection))
                 Status.UnknownError -> showError(it.message)
             }
         }
@@ -96,7 +96,7 @@ class TripOptionsActivity : AppCompatActivity()
                     incrementProgress()
                 }
 
-                Status.NetworkError -> showError(getString(R.string.trip_options_no_connection))
+                Status.NetworkError -> showError(getString(R.string.no_internet_connection))
                 Status.UnknownError -> showError(it.message)
             }
         }

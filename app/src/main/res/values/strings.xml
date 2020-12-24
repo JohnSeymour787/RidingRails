@@ -4,7 +4,7 @@
     <string name="trip_options_cell_price">$%1$.2f</string>
     <string name="trip_options_title_label">Trip Options For:</string>
     <string name="trip_options_no_response_body">Response body not found</string>
-    <string name="trip_options_no_connection">Could not connect to the internet, please check your device settings.</string>
+    <string name="no_internet_connection">Could not connect to the internet, please check your device settings.</string>
     <string name="trip_options_cell_arrow_icon_description">Arrow icon indicating this cell can be clicked</string>
     <string name="trip_options_favourite_icon_description">Star icon to favourite this trip</string>
     <string name="trip_options_text_to">to</string>
@@ -24,6 +24,11 @@
     <plurals name="hours_from_now">
         <item quantity="one">%d hr</item>
         <item quantity="other">%d hrs</item>
+    </plurals>
+
+    <plurals name="days_from_now">
+        <item quantity="one">%d day</item>
+        <item quantity="other">%d days</item>
     </plurals>
 
     <plurals name="interchanges">
