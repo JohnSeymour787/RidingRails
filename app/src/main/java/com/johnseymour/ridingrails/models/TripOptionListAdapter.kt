@@ -12,7 +12,6 @@ import kotlinx.android.synthetic.main.list_cell_trip_option.view.*
 
 class TripOptionListAdapter(private val trips: List<TripJourney>): RecyclerView.Adapter<TripOptionListAdapter.TripOptionViewHolder>()
 {
-
     inner class TripOptionViewHolder(view: TripOptionViewCell): RecyclerView.ViewHolder(view), View.OnClickListener
     {
         internal fun bind(tripJourney: TripJourney)

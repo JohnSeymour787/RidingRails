@@ -32,13 +32,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="@dimen/text_font_size_normal"
-        android:textAlignment="center"
+        android:textAlignment="textStart"
         android:textStyle="bold"
         tools:text="3 mins"
         android:layout_marginEnd="@dimen/grid_box_margin"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/platformName"
-        app:layout_constraintBottom_toBottomOf="@id/platformName"/>
+        app:layout_constraintTop_toTopOf="@id/platformName"/>
 
     <TextView
         android:id="@+id/platformName"

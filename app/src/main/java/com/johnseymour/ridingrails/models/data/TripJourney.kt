@@ -14,7 +14,6 @@ data class TripJourney(
 )
 {
     /**Computed properties for data binding a TripJourney in a RecyclerView list cell**/
-
     val originPlatformName: String
         get() = legs.firstOrNull()?.origin?.name?.split(", ")?.lastOrNull() ?: ""
 
@@ -48,7 +47,7 @@ data class TripJourney(
                     val remainingMinutes = totalMinutes.absoluteValue % MINUTES_PER_HOUR
 
                     resources.getQuantityString(plurals.hours_from_now, totalHours, totalHours) +
-                    "\r\n" +
+                    "\n" +
                     resources.getQuantityString(plurals.minutes_from_now, remainingMinutes, remainingMinutes)
                 }
 
@@ -60,7 +59,7 @@ data class TripJourney(
                     val remainingHours = totalHours.absoluteValue % HOURS_PER_DAY
 
                     resources.getQuantityString(plurals.days_from_now, totalDays, totalDays) +
-                    "\r\n" +
+                    "\n" +
                     resources.getQuantityString(plurals.hours_from_now, remainingHours, remainingHours)
                 }
 
