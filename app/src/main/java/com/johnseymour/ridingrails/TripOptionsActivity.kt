@@ -11,6 +11,7 @@ import com.johnseymour.ridingrails.apisupport.models.Status
 import com.johnseymour.ridingrails.models.TripOptionListAdapter
 import com.johnseymour.ridingrails.models.TripOptionsViewModel
 import com.johnseymour.ridingrails.models.data.Trip
+import com.johnseymour.ridingrails.models.data.TripJourney
 import kotlinx.android.synthetic.main.activity_trip_options.*
 
 class TripOptionsActivity : AppCompatActivity()
@@ -27,7 +28,6 @@ class TripOptionsActivity : AppCompatActivity()
         tripOptionsList.layoutManager = LinearLayoutManager(this)
         tripOptionsList.addItemDecoration(TripOptionsVerticalSpaceDecoration(resources.getDimensionPixelOffset(R.dimen.list_cell_trip_option_spacing)))
 
-
         //Deparcelise the API call parameters and make the ViewModel begin the call.
         //Won't need these strings beyond this point
         //Date and time strings always exist
@@ -42,7 +42,7 @@ class TripOptionsActivity : AppCompatActivity()
             {
                 favouriteTrip.setImageResource(R.drawable.activity_trip_options_icon_favourite)
             }
-        }
+        }   //TODO() One of these blocks (V, lower) will not be called because don't use origin and destination strings anymore
         ?:  //Otherwise, try to get the origin and destination strings to make the API call
         run {
             val originString = intent.getStringExtra(ORIGIN_KEY) ?: ""
@@ -92,7 +92,7 @@ class TripOptionsActivity : AppCompatActivity()
             {
                 Status.Success ->
                 {
-                    tripOptionsList.adapter = TripOptionListAdapter(it?.data ?: listOf())
+                    tripOptionsList.adapter = TripOptionListAdapter(it?.data ?: listOf(), ::showTripDetails)
                     incrementProgress()
                 }
 
@@ -137,6 +137,17 @@ class TripOptionsActivity : AppCompatActivity()
         progressBar.visibility = View.GONE
         origin.visibility = View.GONE
         destination.visibility = View.GONE
+    }
+
+    private fun showTripDetails(tripJourney: TripJourney)
+    {
+        detailContainerView.visibility = View.VISIBLE
+
+        val fragment = TripJourneyDetailFragment.newInstance(tripJourney)
+        supportFragmentManager.beginTransaction()
+            .add(R.id.detailContainerView, fragment)
+            .addToBackStack(null)
+            .commit()
     }
 
     companion object

@@ -1,6 +1,5 @@
 package com.johnseymour.ridingrails.models
 
-import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
@@ -10,9 +9,9 @@ import com.johnseymour.ridingrails.TripOptionViewCell
 import com.johnseymour.ridingrails.models.data.TripJourney
 import kotlinx.android.synthetic.main.list_cell_trip_option.view.*
 
-class TripOptionListAdapter(private val trips: List<TripJourney>): RecyclerView.Adapter<TripOptionListAdapter.TripOptionViewHolder>()
+class TripOptionListAdapter(private val trips: List<TripJourney>, private val onClick: (TripJourney) -> Unit): RecyclerView.Adapter<TripOptionListAdapter.TripOptionViewHolder>()
 {
-    inner class TripOptionViewHolder(view: TripOptionViewCell): RecyclerView.ViewHolder(view), View.OnClickListener
+    inner class TripOptionViewHolder(view: TripOptionViewCell): RecyclerView.ViewHolder(view)
     {
         internal fun bind(tripJourney: TripJourney)
         {
@@ -25,12 +24,8 @@ class TripOptionListAdapter(private val trips: List<TripJourney>): RecyclerView.
                 tripJourney.firstLineColor?.let {firstLine.background.setTint(resources.getColor(it, null))}
                 //Only show number of interchanges if there actually are any
                 numberOfInterchanges.text = if (tripJourney.interchanges > 0) { resources.getQuantityString(R.plurals.interchanges, tripJourney.interchanges, tripJourney.interchanges) } else {""}
+                setOnClickListener { onClick(tripJourney) }
             }
-        }
-
-        override fun onClick(p0: View?)
-        {
-            //TODO("Not yet implemented")
         }
     }
 

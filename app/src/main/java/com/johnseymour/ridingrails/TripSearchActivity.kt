@@ -2,6 +2,7 @@ package com.johnseymour.ridingrails
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.os.bundleOf
 
 const val ORIGIN_SEARCH_KEY = "origin"
 const val DESTINATION_SEARCH_KEY = "destination"
@@ -21,6 +22,15 @@ class TripSearchActivity : AppCompatActivity()
     {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        /*val fragment = TripJourneyDetailFragment.newInstance()
+
+        supportFragmentManager.beginTransaction()
+            .add(R.id.fragmentContainer, fragment)
+            .addToBackStack("cake")
+            .commit()
+
+         */
 
         //Listens for request signals from the TripPlanFragment and creates a StopSearchFragment for the appropriate data
         supportFragmentManager.apply {
