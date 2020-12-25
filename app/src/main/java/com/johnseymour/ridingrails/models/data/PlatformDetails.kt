@@ -1,7 +1,10 @@
 package com.johnseymour.ridingrails.models.data
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
 import java.time.LocalDateTime
 
+@Parcelize
 data class PlatformDetails(
     val platformID: Int,
     val parentStopID: Int,
@@ -18,4 +21,4 @@ data class PlatformDetails(
     //destination -> arrivalEstimated
     //stopSequence -> departurePlanned
     val time2: LocalDateTime?,
-)
+): Parcelable
