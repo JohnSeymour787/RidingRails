@@ -1,8 +1,9 @@
-package com.johnseymour.ridingrails.models
+package com.johnseymour.ridingrails
 
+import android.content.Context
+import android.content.Intent
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import com.johnseymour.ridingrails.DiskRepository
 import com.johnseymour.ridingrails.apisupport.NetworkRepository
 import com.johnseymour.ridingrails.apisupport.models.StatusData
 import com.johnseymour.ridingrails.models.data.StopDetails
@@ -10,9 +11,8 @@ import com.johnseymour.ridingrails.models.data.Trip
 import com.johnseymour.ridingrails.models.data.TripJourney
 import java.io.BufferedWriter
 
-class TripOptionsViewModel: ViewModel()
+class TripOptionsViewModel : ViewModel()
 {
-    /*
     lateinit var initialStopLive: LiveData<StatusData<StopDetails>>
     lateinit var finalDestinationLive: LiveData<StatusData<StopDetails>>
     lateinit var journeyOptionsLive: LiveData<StatusData<List<TripJourney>>>
@@ -36,21 +36,9 @@ class TripOptionsViewModel: ViewModel()
         requestMade = true
     }
 
-    fun startTripPlan(origin: String, destination: String, dateString: String, timeString: String)
-    {
-        if (requestMade) {return}
-        NetworkRepository.planTrip(origin, destination, dateString, timeString).let {
-            initialStopLive = it.initialStopLive
-            finalDestinationLive = it.finalDestinationLive
-            journeyOptionsLive = it.journeyOptionsLive
-        }
-        requestMade = true
-    }
-
     fun favouriteTrip(writer: BufferedWriter)
     {
         trip.favourite = true       //Unfavouriting not currently supported
         DiskRepository.addFavouriteTrip(trip, writer)
     }
-     */
 }

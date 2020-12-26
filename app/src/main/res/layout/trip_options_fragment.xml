@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".TripOptionsFragment">
+
+    <View
+        android:id="@+id/titleBackgroundView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constrainedHeight="true"
+        android:background="@color/colorAccent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/tripOptionsList"/>
+
+    <TextView
+        android:id="@+id/titleText"
+        android:visibility="visible"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/text_font_size_normal"
+        android:text="@string/trip_options_text_to"
+        app:layout_constraintStart_toStartOf="@id/origin"
+        app:layout_constraintTop_toTopOf="@id/favouriteTrip"
+        app:layout_constraintBottom_toBottomOf="@id/favouriteTrip"
+        app:layout_constraintEnd_toEndOf="@id/origin"/>
+
+    <ImageButton
+        android:id="@+id/favouriteTrip"
+        android:layout_width="@dimen/activity_trip_options_favourite_icon_dimens"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/trip_options_favourite_icon_description"
+        android:backgroundTint="@color/colorAccent"
+        android:src="@drawable/activity_trip_options_icon_unfavourite"
+        app:layout_constraintTop_toBottomOf="@id/origin"
+        app:layout_constraintBottom_toTopOf="@id/destination"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/origin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/text_font_size_title"
+        android:textAlignment="center"
+        tools:text="Museum"
+        android:layout_marginTop="@dimen/grid_box_margin"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <TextView
+        android:id="@+id/destination"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/text_font_size_title"
+        android:textAlignment="center"
+        tools:text="Central"
+        android:layout_marginBottom="@dimen/grid_box_margin"
+        app:layout_constraintTop_toBottomOf="@id/favouriteTrip"
+        app:layout_constraintStart_toStartOf="@id/origin"
+        app:layout_constraintEnd_toEndOf="@id/origin"/>
+
+    <TextView
+        android:id="@+id/errorDisplay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:textSize="@dimen/text_font_size_normal"
+        android:layout_margin="@dimen/grid_box_margin"
+        tools:text="Error"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/tripOptionsList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginHorizontal="@dimen/grid_box_margin"
+        android:layout_marginTop="@dimen/grid_box_margin"
+        app:layout_constrainedHeight="true"
+        app:layout_constraintTop_toBottomOf="@id/destination"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="@dimen/activity_trip_options_progress_bar_width"
+        android:layout_height="wrap_content"
+        android:max="3"
+        android:min="0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/detailContainerView"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

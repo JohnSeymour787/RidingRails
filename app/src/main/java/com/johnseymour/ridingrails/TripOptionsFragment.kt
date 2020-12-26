@@ -2,57 +2,55 @@ package com.johnseymour.ridingrails
 
 import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
-import android.view.View
 import androidx.lifecycle.ViewModelProvider
+import android.os.Bundle
+import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.johnseymour.ridingrails.apisupport.models.Status
 import com.johnseymour.ridingrails.models.TripOptionListAdapter
-import com.johnseymour.ridingrails.models.TripOptionsViewModel
 import com.johnseymour.ridingrails.models.data.Trip
 import com.johnseymour.ridingrails.models.data.TripJourney
-import kotlinx.android.synthetic.main.activity_trip_options.*
+import kotlinx.android.synthetic.main.trip_options_fragment.*
 
-class TripOptionsActivity : AppCompatActivity()
+class TripOptionsFragment : Fragment()
 {
-    private val viewModel by lazy {
-        ViewModelProvider(this).get(TripOptionsViewModel::class.java)
+    private lateinit var viewModel: TripOptionsViewModel
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
+    {
+        return inflater.inflate(R.layout.trip_options_fragment, container, false)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?)
     {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_trip_options)
+        super.onViewCreated(view, savedInstanceState)
+        viewModel = ViewModelProvider(this).get(TripOptionsViewModel::class.java)
 
-        /*
-        tripOptionsList.layoutManager = LinearLayoutManager(this)
+        tripOptionsList.layoutManager = LinearLayoutManager(context)
         tripOptionsList.addItemDecoration(TripOptionsVerticalSpaceDecoration(resources.getDimensionPixelOffset(R.dimen.list_cell_trip_option_spacing)))
 
         //Deparcelise the API call parameters and make the ViewModel begin the call.
         //Won't need these strings beyond this point
         //Date and time strings always exist
-        val dateString = intent.getStringExtra(DATE_KEY) ?: ""
-        val timeString = intent.getStringExtra(TIME_KEY) ?: ""
+        val dateString = arguments?.getString(DATE_KEY) ?: ""
+        val timeString = arguments?.getString(TIME_KEY) ?: ""
 
         //If this intent is from selecting a favourite trip, then make an API using this data
-        intent.getParcelableExtra<Trip>(TRIP_KEY)?.let {
+        arguments?.getParcelable<Trip>(TRIP_KEY)?.let {
             viewModel.startTripPlan(it, dateString, timeString)
             //This trip should be a favourite, so change the icon
             if (viewModel.trip.favourite)
             {
                 favouriteTrip.setImageResource(R.drawable.activity_trip_options_icon_favourite)
             }
-        }   //TODO() One of these blocks (V, lower) will not be called because don't use origin and destination strings anymore
-        ?:  //Otherwise, try to get the origin and destination strings to make the API call
-        run {
-            val originString = intent.getStringExtra(ORIGIN_KEY) ?: ""
-            val destinationString = intent.getStringExtra(DESTINATION_KEY) ?: ""
-            viewModel.startTripPlan(originString, destinationString, dateString, timeString)
-        }
+        } ?: return
 
         //Observe the API call's response for the initial stop data
-        viewModel.initialStopLive.observe(this) {
+        viewModel.initialStopLive.observe(viewLifecycleOwner) {
             when (it.status)
             {
                 Status.Success ->
@@ -70,7 +68,7 @@ class TripOptionsActivity : AppCompatActivity()
         }
 
         //Observe the API call's response for the final destination stop data
-        viewModel.finalDestinationLive.observe(this) {
+        viewModel.finalDestinationLive.observe(viewLifecycleOwner) {
             when (it.status)
             {
                 Status.Success ->
@@ -88,7 +86,7 @@ class TripOptionsActivity : AppCompatActivity()
         }
 
         //Observe the API call's response for the full list of journey options
-        viewModel.journeyOptionsLive.observe(this) {
+        viewModel.journeyOptionsLive.observe(viewLifecycleOwner) {
             when (it.status)
             {
                 Status.Success ->
@@ -102,21 +100,23 @@ class TripOptionsActivity : AppCompatActivity()
             }
         }
 
+        /*
         //Write trip details to disk and update favourite icon
         favouriteTrip.setOnClickListener {
             //Don't want to write same trip to disk twice
             if (!viewModel.trip.favourite)
             {
-                viewModel.favouriteTrip(openFileOutput(DiskRepository.FAVOURITE_TRIPS_FILENAME, MODE_APPEND).bufferedWriter())
+                viewModel.favouriteTrip(openFileOutput(DiskRepository.FAVOURITE_TRIPS_FILENAME,
+                    AppCompatActivity.MODE_APPEND
+                                                      ).bufferedWriter())
                 favouriteTrip.setImageResource(R.drawable.activity_trip_options_icon_favourite)
                 //Return the new favourited trip to add to the list of favourites without reading the file again
-                setResult(RESULT_OK, Intent().putExtra(TRIP_KEY, viewModel.trip))
+                setResult(AppCompatActivity.RESULT_OK, Intent().putExtra(TripOptionsActivity.TRIP_KEY, viewModel.trip))
             }
         }
-        */
-    }
 
-    /*
+         */
+    }
 
     /**Increments the progressBar.progress until it reaches the max, then hides it**/
     private fun incrementProgress()
@@ -148,8 +148,8 @@ class TripOptionsActivity : AppCompatActivity()
         detailContainerView.visibility = View.VISIBLE
 
         val fragment = TripJourneyDetailFragment.newInstance(tripJourney)
-        supportFragmentManager.beginTransaction()
-            .add(R.id.detailContainerView, fragment)
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.detailContainerView, fragment)
             .addToBackStack(null)
             .commit()
     }
@@ -157,31 +157,9 @@ class TripOptionsActivity : AppCompatActivity()
     companion object
     {
         const val TRIP_KEY = "trip_key"
-        private const val ORIGIN_KEY = "origin_key"
-        private const val DESTINATION_KEY = "destination_key"
-        private const val DATE_KEY = "date_key"
-        private const val TIME_KEY = "time_key"
+        const val DATE_KEY = "date_key"
+        const val TIME_KEY = "time_key"
 
-        /**Return an Intent to this activity with all necessary string parameters to make a TripPlan API call.**/
-        fun planTripIntent(context: Context, origin: String, destination: String, dateString: String, timeString: String): Intent
-        {
-            return Intent(context, TripOptionsActivity::class.java).apply {
-                putExtra(ORIGIN_KEY, origin)
-                putExtra(DESTINATION_KEY, destination)
-                putExtra(DATE_KEY, dateString)
-                putExtra(TIME_KEY, timeString)
-            }
-        }
-
-        /**Allows for Trip planning using a favourite trip**/
-        fun planTripIntent(context: Context, trip: Trip, dateString: String, timeString: String): Intent
-        {
-            return Intent(context, TripOptionsActivity::class.java).apply {
-                putExtra(TRIP_KEY, trip)
-                putExtra(DATE_KEY, dateString)
-                putExtra(TIME_KEY, timeString)
-            }
-        }
+        fun newInstance() = TripOptionsFragment()
     }
-    */
 }

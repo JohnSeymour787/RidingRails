@@ -4,8 +4,8 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 
-const val ORIGIN_SEARCH_KEY = "origin"
-const val DESTINATION_SEARCH_KEY = "destination"
+const val ORIGIN_SEARCH_KEY = "origin2"
+const val DESTINATION_SEARCH_KEY = "destination2"
 private const val STOP_SEARCH_FRAGMENT_BASE_NAME = "_stop_search_fragment"
 
 class TripSearchActivity : AppCompatActivity()
@@ -22,15 +22,6 @@ class TripSearchActivity : AppCompatActivity()
     {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        /*val fragment = TripJourneyDetailFragment.newInstance()
-
-        supportFragmentManager.beginTransaction()
-            .add(R.id.fragmentContainer, fragment)
-            .addToBackStack("cake")
-            .commit()
-
-         */
 
         //Listens for request signals from the TripPlanFragment and creates a StopSearchFragment for the appropriate data
         supportFragmentManager.apply {
