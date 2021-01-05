@@ -1,17 +1,20 @@
 package com.johnseymour.ridingrails.models.data
 
 import android.content.res.Resources
+import android.os.Parcelable
 import com.johnseymour.ridingrails.Constants
 import com.johnseymour.ridingrails.R.plurals
+import kotlinx.android.parcel.Parcelize
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import kotlin.math.absoluteValue
 
+@Parcelize
 data class TripJourney(
     val interchanges: Int,
     val legs: List<TripLeg>,
     val price: Float
-)
+): Parcelable
 {
     /**Computed properties for data binding a TripJourney in a RecyclerView list cell**/
     val originPlatformName: String

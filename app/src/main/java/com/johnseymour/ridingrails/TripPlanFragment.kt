@@ -17,6 +17,7 @@ import androidx.activity.result.contract.ActivityResultContract
 import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.johnseymour.ridingrails.TripOptionsFragment.Companion.TRIP_KEY
 import com.johnseymour.ridingrails.models.FavouriteTripsListAdapter
 import com.johnseymour.ridingrails.models.data.StopDetails
 import com.johnseymour.ridingrails.models.data.Trip
@@ -30,6 +31,8 @@ class TripPlanFragment : Fragment()
     {
         const val ORIGIN_SEARCH_REQUEST = "request_stop_search_origin"
         const val DESTINATION_SEARCH_REQUEST = "request_stop_search_destination"
+        const val TRIP_OPTIONS_REQUEST = "request_trip_options"
+        private const val TRIP_OPTIONS_FRAGMENT_NAME = "trip_options_fragment"
     }
 
     private lateinit var viewModel: TripPlanViewModel
@@ -42,7 +45,7 @@ class TripPlanFragment : Fragment()
         {
             if (resultCode != RESULT_OK) {return null}
 
-            return intent?.getParcelableExtra(TripOptionsActivity.TRIP_KEY)
+            return intent?.getParcelableExtra(TRIP_KEY)
         }
     })
     //Activity result callback
@@ -94,11 +97,25 @@ class TripPlanFragment : Fragment()
                 }
                 parentFragmentManager.popBackStack()
             }
+            setFragmentResultListener(TRIP_OPTIONS_REQUEST, viewLifecycleOwner) { _, bundle ->
+                bundle.getParcelable<Trip>(TRIP_KEY)?.let {
+                    //Add the newly-favourited Trip and notify the list's adapter
+                    viewModel.favouriteTrips.add(it)
+                    favouriteTripsList.adapter?.notifyItemInserted(viewModel.favouriteTrips.size)
+                    viewModel.trip.favourite = false
+                }
+            }
         }
 
         planTripButton.setOnClickListener {
-            //Launch the ActivityResultLauncher
-            startForResult.launch(null)
+            //Create TripOptionsFragment with necessary details and add it to the backstack
+            val fragment = TripOptionsFragment.newInstance()
+            fragment.arguments = viewModel.planTripBundle()
+
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainer, fragment)
+                .addToBackStack(TRIP_OPTIONS_FRAGMENT_NAME)
+                .commit()
        }
 
         originName.text = viewModel.trip.origin?.disassembledName
@@ -180,7 +197,14 @@ class TripPlanFragment : Fragment()
     {
         //If a favourite trip is selected, then don't want to add it again if the 2nd activity returns
         //Thus, don't expect a result.
-        startActivity(viewModel.planTripIntent(requireContext(), trip))
+        //startActivity(viewModel.planTripIntent(requireContext(), trip))
+        val fragment = TripOptionsFragment.newInstance()
+        fragment.arguments = viewModel.planTripBundle(trip)
+
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.fragmentContainer, fragment)
+            .addToBackStack(TRIP_OPTIONS_FRAGMENT_NAME)
+            .commit()
     }
 
     private fun showPlanButton()

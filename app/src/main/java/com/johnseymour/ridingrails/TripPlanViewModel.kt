@@ -2,7 +2,12 @@ package com.johnseymour.ridingrails
 
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
+import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModel
+import com.johnseymour.ridingrails.TripOptionsFragment.Companion.DATE_KEY
+import com.johnseymour.ridingrails.TripOptionsFragment.Companion.TIME_KEY
+import com.johnseymour.ridingrails.TripOptionsFragment.Companion.TRIP_KEY
 import com.johnseymour.ridingrails.models.data.Trip
 import java.io.BufferedReader
 import java.time.LocalDateTime
@@ -24,8 +29,25 @@ class TripPlanViewModel : ViewModel()
     {
         return if (trip.validTrip())
         {
-            TripOptionsActivity.planTripIntent(context, trip, plannedTime.format(
-                Constants.Formatters.APIDateFormatter), plannedTime.toAPITimeString())
+            //TripOptionsActivity.planTripIntent(context, trip, plannedTime.format(
+                null
+        //  Constants.Formatters.APIDateFormatter), plannedTime.toAPITimeString())
+        }
+        else
+        {
+            null
+        }
+    }
+
+    fun planTripBundle(trip: Trip = this.trip): Bundle?
+    {
+        return if (trip.validTrip())
+        {
+            bundleOf(
+                TRIP_KEY to trip,
+                DATE_KEY to plannedTime.format(Constants.Formatters.APIDateFormatter),
+                TIME_KEY to plannedTime.toAPITimeString()
+            )
         }
         else
         {

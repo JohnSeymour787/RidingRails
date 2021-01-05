@@ -1,7 +1,11 @@
 package com.johnseymour.ridingrails.models.data
 
+import android.os.Parcelable
 import com.johnseymour.ridingrails.R
+import kotlinx.android.parcel.IgnoredOnParcel
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 data class TripLeg(
     val tripCode: Int,
     val duration: Int,
@@ -9,8 +13,9 @@ data class TripLeg(
     val origin: PlatformDetails,
     val destination: PlatformDetails,
     val stopSequence: List<PlatformDetails>
-)
+): Parcelable
 {
+    @IgnoredOnParcel
     val lineColor = when (lineName)
     {
         "T1" -> R.color.T1
