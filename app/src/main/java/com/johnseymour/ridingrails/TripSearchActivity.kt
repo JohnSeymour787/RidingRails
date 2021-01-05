@@ -2,10 +2,9 @@ package com.johnseymour.ridingrails
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.os.bundleOf
 
-const val ORIGIN_SEARCH_KEY = "origin2"
-const val DESTINATION_SEARCH_KEY = "destination2"
+const val ORIGIN_SEARCH_KEY = "origin"
+const val DESTINATION_SEARCH_KEY = "destination"
 private const val STOP_SEARCH_FRAGMENT_BASE_NAME = "_stop_search_fragment"
 
 class TripSearchActivity : AppCompatActivity()

@@ -1,7 +1,5 @@
 package com.johnseymour.ridingrails
 
-import android.content.Context
-import android.content.Intent
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -9,7 +7,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.os.bundleOf
+import androidx.fragment.app.setFragmentResult
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.johnseymour.ridingrails.TripPlanFragment.Companion.TRIP_OPTIONS_REQUEST
 import com.johnseymour.ridingrails.apisupport.models.Status
 import com.johnseymour.ridingrails.models.TripOptionListAdapter
 import com.johnseymour.ridingrails.models.data.Trip
@@ -100,22 +101,18 @@ class TripOptionsFragment : Fragment()
             }
         }
 
-        /*
         //Write trip details to disk and update favourite icon
         favouriteTrip.setOnClickListener {
             //Don't want to write same trip to disk twice
             if (!viewModel.trip.favourite)
             {
-                viewModel.favouriteTrip(openFileOutput(DiskRepository.FAVOURITE_TRIPS_FILENAME,
-                    AppCompatActivity.MODE_APPEND
-                                                      ).bufferedWriter())
+                viewModel.favouriteTrip(context?.openFileOutput(DiskRepository.FAVOURITE_TRIPS_FILENAME,
+                    AppCompatActivity.MODE_APPEND)?.bufferedWriter())
                 favouriteTrip.setImageResource(R.drawable.activity_trip_options_icon_favourite)
                 //Return the new favourited trip to add to the list of favourites without reading the file again
-                setResult(AppCompatActivity.RESULT_OK, Intent().putExtra(TripOptionsActivity.TRIP_KEY, viewModel.trip))
+                setFragmentResult(TRIP_OPTIONS_REQUEST, bundleOf(TRIP_KEY to viewModel.trip))
             }
         }
-
-         */
     }
 
     /**Increments the progressBar.progress until it reaches the max, then hides it**/
@@ -150,12 +147,13 @@ class TripOptionsFragment : Fragment()
         val fragment = TripJourneyDetailFragment.newInstance(tripJourney)
         parentFragmentManager.beginTransaction()
             .replace(R.id.detailContainerView, fragment)
-            .addToBackStack(null)
+            .addToBackStack(TRIP_DETAILS_FRAGMENT)
             .commit()
     }
 
     companion object
     {
+        private const val TRIP_DETAILS_FRAGMENT = "trip_details_fragment"
         const val TRIP_KEY = "trip_key"
         const val DATE_KEY = "date_key"
         const val TIME_KEY = "time_key"

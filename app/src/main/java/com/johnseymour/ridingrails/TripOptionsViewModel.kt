@@ -36,8 +36,9 @@ class TripOptionsViewModel : ViewModel()
         requestMade = true
     }
 
-    fun favouriteTrip(writer: BufferedWriter)
+    fun favouriteTrip(writer: BufferedWriter?)
     {
+        writer ?: return
         trip.favourite = true       //Unfavouriting not currently supported
         DiskRepository.addFavouriteTrip(trip, writer)
     }

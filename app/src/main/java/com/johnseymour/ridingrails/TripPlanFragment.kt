@@ -31,6 +31,8 @@ class TripPlanFragment : Fragment()
     {
         const val ORIGIN_SEARCH_REQUEST = "request_stop_search_origin"
         const val DESTINATION_SEARCH_REQUEST = "request_stop_search_destination"
+        const val TRIP_OPTIONS_REQUEST = "request_trip_options"
+        private const val TRIP_OPTIONS_FRAGMENT_NAME = "trip_options_fragment"
     }
 
     private lateinit var viewModel: TripPlanViewModel
@@ -95,6 +97,14 @@ class TripPlanFragment : Fragment()
                 }
                 parentFragmentManager.popBackStack()
             }
+            setFragmentResultListener(TRIP_OPTIONS_REQUEST, viewLifecycleOwner) { _, bundle ->
+                bundle.getParcelable<Trip>(TRIP_KEY)?.let {
+                    //Add the newly-favourited Trip and notify the list's adapter
+                    viewModel.favouriteTrips.add(it)
+                    favouriteTripsList.adapter?.notifyItemInserted(viewModel.favouriteTrips.size)
+                    viewModel.trip.favourite = false
+                }
+            }
         }
 
         planTripButton.setOnClickListener {
@@ -104,7 +114,7 @@ class TripPlanFragment : Fragment()
 
             parentFragmentManager.beginTransaction()
                 .replace(R.id.fragmentContainer, fragment)
-                .addToBackStack(null)
+                .addToBackStack(TRIP_OPTIONS_FRAGMENT_NAME)
                 .commit()
        }
 
@@ -193,7 +203,7 @@ class TripPlanFragment : Fragment()
 
         parentFragmentManager.beginTransaction()
             .replace(R.id.fragmentContainer, fragment)
-            .addToBackStack(null)
+            .addToBackStack(TRIP_OPTIONS_FRAGMENT_NAME)
             .commit()
     }
 
