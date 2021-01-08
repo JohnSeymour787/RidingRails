@@ -15,6 +15,10 @@
     <string name="activity_main_list_cell_favourites_icon_tap_me_description">Arrow icon indicating this cell can be tapped</string>
     <string name="fragment_stop_search_input_box_hint">Enter stop name</string>
     <string name="list_cell_stop_search_modes_label">Available Modes:</string>
+    <string name="list_cell_platform_details_time_label_est_dep">Estimated Departure: </string>
+    <string name="list_cell_platform_details_time_label_pln_dep">Planned Departure: </string>
+    <string name="list_cell_platform_details_time_label_est_arr">Estimated Arrival: </string>
+    <string name="list_cell_platform_details_time_label_pln_arr">Planned Arrival: </string>
 
     <plurals name="minutes_from_now">
         <item quantity="one">%d min</item>
