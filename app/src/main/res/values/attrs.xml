@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="PlatformDetailsVieCell">
+    <declare-styleable name="PlatformDetailsViewCell">
         <attr name="PlatformDetailsType" format="enum">
             <enum name="origin" value="0"/>
             <enum name="destination" value="1"/>
