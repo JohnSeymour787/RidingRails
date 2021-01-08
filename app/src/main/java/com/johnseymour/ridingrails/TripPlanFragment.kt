@@ -37,6 +37,7 @@ class TripPlanFragment : Fragment()
 
     private lateinit var viewModel: TripPlanViewModel
     //ActivityResultLauncher used to launch the TripOptionsActivity which can also return a result back to this activity
+    //TODO() Remove this V
     private val startForResult = registerForActivityResult(object: ActivityResultContract<Unit, Trip?>() {
         //ViewModel uses its properties to create an intent with the user parameters to allow the 2nd activity to make the API calls.
         override fun createIntent(context: Context, input: Unit?): Intent = viewModel.planTripIntent(context) ?: Intent()
@@ -116,7 +117,7 @@ class TripPlanFragment : Fragment()
                 .replace(R.id.fragmentContainer, fragment)
                 .addToBackStack(TRIP_OPTIONS_FRAGMENT_NAME)
                 .commit()
-       }
+        }
 
         originName.text = viewModel.trip.origin?.disassembledName
         destinationName.text = viewModel.trip.destination?.disassembledName
@@ -195,9 +196,7 @@ class TripPlanFragment : Fragment()
     /**Called when a favourite Trip is tapped. Begins a trip plan using this origin and destination station, starting now.**/
     private fun favouriteCellClicked(trip: Trip)
     {
-        //If a favourite trip is selected, then don't want to add it again if the 2nd activity returns
-        //Thus, don't expect a result.
-        //startActivity(viewModel.planTripIntent(requireContext(), trip))
+        //Create and show a new fragment for a trip plan with the selected trip
         val fragment = TripOptionsFragment.newInstance()
         fragment.arguments = viewModel.planTripBundle(trip)
 

@@ -18,7 +18,7 @@ internal object PlatformDetailsDeserialiser: JsonDeserializer<PlatformDetails>
         val parentJSON = platformDetailsJSON.getAsJsonObject("parent") ?: return null
 
         val platformID = platformDetailsJSON.getAsJsonPrimitive("id").asInt
-        val parentStopID = parentJSON.getAsJsonPrimitive("id").asInt
+        val parentStopID = parentJSON.getAsJsonPrimitive("id").asInt        //TODO() Possible issue here of this line attempting to cast a string
         val name = parentJSON.getAsJsonPrimitive("disassembledName")?.asString ?: parentJSON.getAsJsonPrimitive("name")?.asString ?: ""
 
         //Strings can differ for what this Platform detail represents, or may be null (see PlatformDetails definition)

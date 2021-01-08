@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <TextView
+        android:id="@+id/lineNameText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:text="T1"/>
+
+    <TextView
+        android:id="@+id/durationText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        custom:layout_constraintStart_toStartOf="parent"
+        custom:layout_constraintTop_toBottomOf="@id/lineNameText"
+        tools:text="10 minutes"/>
+
+    <com.johnseymour.ridingrails.models.PlatformDetailsViewCell
+        android:id="@+id/legOrigin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        custom:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/durationText"
+        custom:PlatformDetailsType="origin"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/stopSequenceList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/legOrigin"/>
+
+    <com.johnseymour.ridingrails.models.PlatformDetailsViewCell
+        android:id="@+id/legDestination"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        custom:layout_constraintStart_toStartOf="parent"
+        custom:layout_constraintTop_toBottomOf="@id/stopSequenceList"
+        custom:PlatformDetailsType="destination"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
